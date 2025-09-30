@@ -1,0 +1,25 @@
+{
+  "name": "Innovius VC Dashboard",
+  "short_name": "Innovius",
+  "icons": [
+    {
+      "src": "https://g24kvg1wyx9lx0lb.public.blob.vercel-storage.com/Favicons/favicon-xjaIPGl81jIiBIYnLhIVGqyxpgWdnF.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "https://g24kvg1wyx9lx0lb.public.blob.vercel-storage.com/Favicons/icon-PLGaEQSTPK1LpCmlxBxbXqGb9jMThx.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://g24kvg1wyx9lx0lb.public.blob.vercel-storage.com/Favicons/apple-icon-sySNfhepnUvJ03YCM2qLhfrwmc1WzT.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#0D2542",
+  "background_color": "#ffffff"
+}
