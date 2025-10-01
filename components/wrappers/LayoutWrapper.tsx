@@ -4,6 +4,7 @@ import { useState, useCallback } from "react"
 import { useSession, signIn, signOut } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { useTheme } from "@/components/theme-provider"
+import { useToast } from "@/components/ui/use-toast"
 import { HeaderSection } from "@/components/vc-dashboard/core/HeaderSection"
 
 interface LayoutWrapperProps {
@@ -14,14 +15,43 @@ export function LayoutWrapper({ children }: LayoutWrapperProps) {
   const { data: session, status } = useSession()
   const router = useRouter()
   const { themeGradient } = useTheme()
+  const { toast } = useToast()
 
   const handleSignIn = useCallback(() => {
     signIn("auth0")
   }, [])
 
-  const handleSignOut = useCallback(() => {
-    signOut()
-  }, [])
+  const handleSignOut = useCallback(async () => {
+    try {
+      console.log('Signing out...')
+      // Call our custom logout API to delete the session cookie
+      const response = await fetch('/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include'
+      })
+
+      console.log('Response:', response)
+      
+      if (!response.ok) {
+        throw new Error('Logout failed')
+      }
+      
+      // Redirect to home page
+      router.push('/')
+    } catch (error) {
+      console.error('Error during sign out:', error)
+      
+      // Show error toast
+      toast({
+        title: "Error logging out",
+        description: "There was a problem signing you out. Please try again.",
+        variant: "destructive",
+      })
+      
+      // Still redirect to home page as fallback
+      router.push('/')
+    }
+  }, [router, toast])
 
   const handlePreferencesOpen = useCallback(() => {
     // This would open a preferences dialog

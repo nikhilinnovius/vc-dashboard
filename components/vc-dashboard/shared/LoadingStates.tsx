@@ -20,7 +20,7 @@ export const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({
             <div className="h-4 w-32 bg-white/10 rounded animate-pulse" />
           </div>
         </div>
-        {entityType === "startup" ? <StartupGridSkeleton count={12} /> : <VCGridSkeleton count={12} />}
+        {entityType === "startup" ? <StartupGridSkeleton count={16} /> : <VCGridSkeleton count={16} />}
       </div>
     )
   }
