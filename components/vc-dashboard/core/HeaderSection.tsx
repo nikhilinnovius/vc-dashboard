@@ -120,9 +120,6 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
                   Feature Request
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onSelect={onSignOut} className="text-red-600 dark:text-red-400">
-                  Sign Out
-                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
             

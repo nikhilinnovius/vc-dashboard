@@ -1,16 +1,8 @@
 import { NextResponse } from "next/server"
 import { fetchAndStoreCompanyLogo, getLogoFromCache, cleanDomainName } from "@/lib/logo-utils"
-import { getServerSession } from "next-auth/next"
-import { authOptions } from "@/lib/auth"
 
 export async function GET(request: Request, { params }: { params: { domain: string } }) {
   try {
-    // Check authentication
-    const session = await getServerSession(authOptions)
-    if (!session || !session.user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
-
     const domain = decodeURIComponent(params.domain)
     const cleanDomain = cleanDomainName(domain)
 

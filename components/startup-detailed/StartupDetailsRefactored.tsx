@@ -23,10 +23,10 @@ import { CEOLinkedInSection } from "./sections/CEOLinkedInSection"
 import { ScoreReasoningSection } from "./sections/ScoreReasoningSection"
 import { InnoviusCoverageSection } from "./sections/InnoviusCoverageSection"
 import { AdditionalDetailsSection } from "./sections/AdditionalDetailsSection"
-import { PeopleSection } from "./sections/PeopleSection"
+import { PeopleSection } from "./sections/PeopleSection"  
 
 // Utility imports
-import { formatEmployeeCount, extractVCName, getCompanyScoreColor } from "@/utils/startup-utils"
+import { formatEmployeeCount, extractVCName, getCompanyScoreColor, formatStartupDate } from "@/utils/startup-utils"
 import { getStatusColor } from "@/utils/startup-utils"
 
 // Hook and type imports
@@ -34,6 +34,7 @@ import { SavedItemsService } from "@/services/saved-items-service"
 import type { StartupDetailsProps } from "@/types/startup"
 import { transformToStartupData } from "@/lib/data-transforms"
 import type { StartupData } from "@/lib/data-utils"
+
 
 export function StartupDetails({ startupId, onBack }: StartupDetailsProps) {
   const [startupData, setStartupData] = useState<StartupData | null>(null)
@@ -300,7 +301,7 @@ function QuickStats({ data }: { data: StartupData }) {
         <div className="flex items-center">
           <Calendar className="h-5 w-5 text-white mr-2" />
           <span className="text-white font-bold">Founded:</span>
-          <span className="ml-1 text-white break-words">{data.foundedDate}</span>
+          <span className="ml-1 text-white break-words">{formatStartupDate(data.foundedDate)}</span>  
         </div>
       )}
       
@@ -316,7 +317,6 @@ function QuickStats({ data }: { data: StartupData }) {
     </div>
   )
 }
-
 
 function StartupContent({ data }: { data: StartupData }) {
   return (

@@ -167,8 +167,8 @@ export default function VCDetailPage({ params }: { params: { id: string } }) {
           {vc?.vcScore && (
           <div className="flex items-center gap-3 text-sm font-normal text-white/60 mb-1">
             <span>Score: {vc?.vcScore}</span><span>|</span>
-            <span>Portfolio Size: {numberOfPortfolioCompanies}</span>
-            {vc?.aum && (<span>| AUM: {normalizeAUM(vc.aum)}</span>)}
+            <span>Portfolio Size: {numberOfPortfolioCompanies}</span>{vc?.aum && <span>|</span>}
+            {vc?.aum && (<span>AUM: {normalizeAUM(vc.aum)}</span>)}
           </div>
           )}
           </div>

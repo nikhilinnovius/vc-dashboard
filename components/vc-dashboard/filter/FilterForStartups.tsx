@@ -18,6 +18,16 @@ const roundOptions = [
   "Others"
 ]
 
+export const frontendToBackendRoundMap: Record<string, string> = {
+  "Pre-Seed": "PRE_SEED",
+  "Seed": "SEED",
+  "Series A": "SERIES_A",
+  "Series B": "SERIES_B",
+  "Series C": "SERIES_C",
+  "Series D": "SERIES_D"
+}
+
+
 const endMarketOptions = [
   "Aerospace & Defense",
   "AI",

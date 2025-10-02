@@ -1,27 +1,28 @@
 import { NextResponse } from "next/server"
 import { fetchAndStoreCompanyLogo } from "@/lib/logo-utils"
-import { getServerSession } from "next-auth/next"
-import { authOptions } from "@/lib/auth"
-import { fetchCSVData } from "@/lib/data-utils"
 
 export async function POST(request: Request) {
   try {
-    // Check authentication
-    const session = await getServerSession(authOptions)
-    if (!session || !session.user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
-
     // Get request body
     const body = await request.json()
     const { forceRefresh = false } = body
 
-    // Fetch all company data
-    const { vcs, startups } = await fetchCSVData()
+    // Fetch all company data from API endpoints
+    const [vcResponse, startupResponse] = await Promise.all([
+      fetch(`${process.env.NEXT_PUBLIC_API_URL || ""}/api/fetch-all-vcs`),
+      fetch(`${process.env.NEXT_PUBLIC_API_URL || ""}/api/fetch-all-companies`)
+    ])
+
+    if (!vcResponse.ok || !startupResponse.ok) {
+      throw new Error("Failed to fetch company data")
+    }
+
+    const vcData = await vcResponse.json()
+    const startupData = await startupResponse.json()
 
     // Extract unique domains
-    const vcDomains = vcs.map((vc) => vc.website).filter(Boolean)
-    const startupDomains = startups.map((startup) => startup.website).filter(Boolean)
+    const vcDomains = (vcData.vcs || []).map((vc: any) => vc.website).filter(Boolean)
+    const startupDomains = (startupData.startups || []).map((startup: any) => startup.website).filter(Boolean)
 
     // Combine and deduplicate domains
     const allDomains = [...new Set([...vcDomains, ...startupDomains])]

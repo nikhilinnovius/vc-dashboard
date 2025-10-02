@@ -3,24 +3,30 @@ import type { NextRequest } from "next/server"
 import { getToken } from "next-auth/jwt"
 import { verifyToken } from "./lib/auth"
 
-// Environment-based configurationc
-let isDevelopment = false
-if (!process.env.APP_ENV) {
-  isDevelopment = false
-} else {
-  isDevelopment = process.env.APP_ENV === "development"
-}
-console.log(isDevelopment)
-console.log(process.env.APP_ENV)
-console.log(`[MIDDLEWARE] Environment: ${process.env.APP_ENV}`)
-// Dynamic callback URL based on environment
-const getCallbackUrl = (request: NextRequest) => {
-  const baseUrl = `${request.nextUrl.protocol}//${request.nextUrl.host}`
-  return `${baseUrl}/`
+// Environment-based configuration
+// Fallback to NODE_ENV if APP_ENV is not set
+const getEnvironment = () => {
+  if (process.env.APP_ENV) {
+    return process.env.APP_ENV
+  }
+  // Fallback to NODE_ENV (Vercel sets this automatically)
+  if (process.env.NODE_ENV) {
+    return process.env.NODE_ENV
+  }
+  // Final fallback to production for safety
+  return 'production'
 }
 
-const getAuthSystemUrl = (request: NextRequest) => {
-  const callbackUrl = getCallbackUrl(request)
+const environment = getEnvironment()
+const isDevelopment = environment === 'development'
+
+console.log(`[MIDDLEWARE] Environment: ${environment} (isDevelopment: ${isDevelopment})`)
+console.log(`[MIDDLEWARE] APP_ENV: ${process.env.APP_ENV}`)
+console.log(`[MIDDLEWARE] NODE_ENV: ${process.env.NODE_ENV}`)
+
+const getLoginURL = (request: NextRequest) => {
+  const callbackUrl = request.nextUrl.protocol + "//" + request.nextUrl.host + "/" + request.nextUrl.pathname + request.nextUrl.search
+  console.log(`[MIDDLEWARE] Callback URL: ${callbackUrl}`)
   return `https://athena.innoviuscapital.com/login?callbackUrl=${encodeURIComponent(callbackUrl)}`
 }
 
@@ -30,7 +36,6 @@ const getAuthSystemUrl = (request: NextRequest) => {
  * - Production: Uses JWT token-based authentication with external auth system
  */
 export async function middleware(request: NextRequest) {
-
   const { pathname, searchParams } = request.nextUrl
 
   console.log(`[MIDDLEWARE] Processing request to: ${pathname} (${isDevelopment ? 'DEV' : 'PROD'} mode)`)
@@ -103,7 +108,7 @@ async function handleDevelopmentAuth(request: NextRequest) {
 async function handleProductionAuth(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl
 
-  // Check for token in URL parameters FIRST
+  // Check for token in URL parameters
   const token = searchParams.get("token")
 
   if (token) {
@@ -144,11 +149,11 @@ async function handleProductionAuth(request: NextRequest) {
         return response
       } else {
         console.error("[MIDDLEWARE] Token verification failed, redirecting to auth system")
-        return NextResponse.redirect(getAuthSystemUrl(request))
+        return NextResponse.redirect(getLoginURL(request))
       }
     } catch (error) {
       console.error("[MIDDLEWARE] Error during token verification:", error)
-      return NextResponse.redirect(getAuthSystemUrl(request))
+      return NextResponse.redirect(getLoginURL(request))
     }
   }
 
@@ -157,7 +162,7 @@ async function handleProductionAuth(request: NextRequest) {
 
   if (!sessionCookie?.value) {
     console.log("[MIDDLEWARE] No session found, redirecting to auth system")
-    return NextResponse.redirect(getAuthSystemUrl(request))
+    return NextResponse.redirect(getLoginURL(request))
   }
 
   try {
@@ -169,34 +174,36 @@ async function handleProductionAuth(request: NextRequest) {
       console.log("[MIDDLEWARE] Session expired, redirecting to auth system")
 
       // Session expired - clear cookie and redirect
-      const response = NextResponse.redirect(getAuthSystemUrl(request))
+      const response = NextResponse.redirect(getLoginURL(request))
       response.cookies.delete("auth-session")
       return response
     }
 
     console.log("[MIDDLEWARE] Valid session found for user:", userData.email)
-    // Valid session - continue
-    console.log("[MIDDLEWARE] Valid session found for user:", userData.email)
+
     return NextResponse.next()
   } catch (error) {
     console.error("[MIDDLEWARE] Error parsing session cookie:", error)
 
-    console.error("[MIDDLEWARE] Error parsing session cookie:", error)
     // Invalid session data - clear cookie and redirect
-    const response = NextResponse.redirect(getAuthSystemUrl(request))
+    const response = NextResponse.redirect(getLoginURL(request))
     response.cookies.delete("auth-session")
     return response
   }
 }
 
-/**
- * Middleware configuration - CRITICAL: Only run on pages, not API routes or static files
- */
+
+// Configure which paths the middleware runs on
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico).*)",
-    "/((?!.*\\.).*)",
+    /*
+     * Match all request paths except:
+     * 1. Most /api routes (but include specific ones that need auth)
+     * 2. /_next (Next.js internals)
+     * 3. /_static (static files)
+     * 4. /favicon.ico, /manifest.json (static files)
+     */
+    "/((?!_next|_static|favicon.ico|manifest.json).*)",
+    // Include specific API routes that need authentication
   ],
 }
-
-

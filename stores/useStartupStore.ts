@@ -1,6 +1,7 @@
 import { transformToStartupData } from '@/lib/data-transforms'
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
+import { frontendToBackendRoundMap } from '@/components/vc-dashboard/filter/FilterForStartups'
 
 // Startup/Company interface based on existing types
 export interface Startup {
@@ -318,12 +319,31 @@ export const useStartupStore = create<StartupStore>()(
             )
           })
         }
+
+        // Map roundFilters to backend format
+        let backendRoundFilters = roundFilters.map((round) => {
+          return frontendToBackendRoundMap[round]
+        })
+        
+        console.log('🔍 Round filtering debug:', {
+          originalRoundFilters: roundFilters,
+          backendRoundFilters: backendRoundFilters,
+          frontendToBackendRoundMap: frontendToBackendRoundMap,
+          sampleStartupLastRounds: filtered.slice(0, 5).map(s => s.lastRound)
+        })
         
         // Apply round filters
-        if (roundFilters.length > 0) {
+        if (backendRoundFilters.length > 0) {
+          const beforeFilterCount = filtered.length
           filtered = filtered.filter(startup => 
-            roundFilters.includes(startup.lastRound || '')
+            backendRoundFilters.includes(startup.lastRound || '')
           )
+          console.log('🎯 Round filter results:', {
+            beforeCount: beforeFilterCount,
+            afterCount: filtered.length,
+            backendRoundFilters,
+            matchedStartups: filtered.slice(0, 3).map(s => ({ name: s.name, lastRound: s.lastRound }))
+          })
         }
 
         // Apply status filters

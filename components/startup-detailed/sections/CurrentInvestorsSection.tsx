@@ -44,25 +44,6 @@ export function CurrentInvestorsSection({ data }: CurrentInvestorsSectionProps) 
             icon={<Link className="h-4 w-4 text-white" />}
           />
         )}
-  
-        {data.innoviusConnected && (
-          <StatItem
-            label="Connected with Company"
-            value={data.innoviusConnected ? "Yes" : "No"}
-            icon={<Link className="h-4 w-4 text-white" />}
-            positive={data.innoviusConnected}
-          />
-        )}
-  
-        {data.innoviusConnected !== undefined && (
-          <StatItem
-            label="Innovius Connected"
-            value={data.innoviusConnected ? "Yes" : "No"}
-            icon={<Link className="h-4 w-4 text-white" />}
-            positive={data.innoviusConnected}
-            negative={!data.innoviusConnected}
-          />
-        )}
       </div>
     </section>
   )
