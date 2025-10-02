@@ -23,7 +23,7 @@ export function FundingSection({ data }: FundingSectionProps) {
      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
        {data.lastRound && (
          <div className="bg-white/5 p-3 rounded-lg">
-           <div className="text-sm text-white/60 mb-1">Last Round ayy</div>
+           <div className="text-sm text-white/60 mb-1">Last Round</div>
            <div className="text-lg font-medium text-white">
              {data.lastRound}
              {data.recentFunding && (

@@ -23,13 +23,13 @@ export function BackToAthenaButton({ className = "" }: BackToAthenaButtonProps) 
    * Handles navigation to the Athena homepage
    * Navigates to the main Athena landing page at athena.innoviuscapital.com
    */
-  const handleNavigateToHome = () => {
-    window.location.href = "/"
+  const handleBackToAthena = () => {
+    window.location.href = "https://athena.innoviuscapital.com/"
   }
 
   return (
     <Button
-      onClick={handleNavigateToHome}
+      onClick={handleBackToAthena}
       variant="outline"
       className={`
         bg-white/10 text-white hover:bg-white/20 border-white/20 

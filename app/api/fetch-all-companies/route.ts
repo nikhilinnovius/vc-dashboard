@@ -15,7 +15,7 @@ export async function GET(req: Request) {
   // Then get the supabase data: all VCs. Since we are fetching all VCs and supabase only selects 1000 rows at a time, we need to fetch all VCs in batches.
 
   const { count, error: countError } = await supabase
-    .from("vcs")
+    .from("companies")
     .select("*", { count: "exact", head: true })
   if (countError) {
     return NextResponse.json({ error: countError.message }, { status: 500 })

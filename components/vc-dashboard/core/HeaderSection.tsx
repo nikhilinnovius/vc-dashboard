@@ -97,7 +97,7 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
       <div className="flex w-full flex-wrap items-center justify-center sm:justify-end gap-2 sm:gap-4 sm:w-auto">
         {status === "authenticated" ? (
           <>
-            {/* <BackToAthenaButton className="order-1" /> */}
+            <BackToAthenaButton className="order-1" />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button

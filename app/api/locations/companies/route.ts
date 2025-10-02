@@ -29,13 +29,13 @@ export async function GET() {
 
     data?.forEach((item) => {
       if (item.city) {
-        let city = item.city.trim().toLowerCase().trim()
-        city = city.charAt(0).toUpperCase() + city.slice(1)
+        let city = item.city.trim()
+        // city = city.charAt(0).toUpperCase() + city.slice(1)
         citySet.add(city)
       }
       if (item.state) {
-        let state = item.state.trim().toLowerCase().trim()
-        state = state.charAt(0).toUpperCase() + state.slice(1)
+        let state = item.state.trim()
+        // state = state.charAt(0).toUpperCase() + state.slice(1)
         stateSet.add(state)
       }
     })

@@ -101,11 +101,6 @@ export default function NonAffinityStartupsPage() {
     updateURL({ page: newPage.toString() })
   }
 
-  if (isLoading) {
-    return StartupGridSkeleton({ count: Math.ceil(totalItems/totalPages) })
-    // return <div className="text-white text-center py-10">Loading startups...</div>
-  }
-
   if (error) {
     return (
       <div className="text-white text-center py-10">
@@ -125,13 +120,21 @@ export default function NonAffinityStartupsPage() {
 
   if (isLoading) {
     return (
+      <div className="p-4">
+      <h2 className="text-2xl font-bold text-white mb-6">
+        Prospect Companies (Not on Affinity)
+        <span className="ml-2 text-base font-normal text-white/60">
+          {totalItems > 0 ? `${totalItems.toLocaleString()} Startups` : "Loading..."}
+        </span>
+      </h2>
       <div className="text-white">
       <div className="text-sm text-white/60 mt-2">
-        This may take a few moments while we fetch VC and Startup data
+        This may take a few moments while we fetch 85k+ prospect companies
       </div>  
       <div className="mt-4">
-        <LoadingIndicator entityType="vc" showSkeleton={true} />
+        <LoadingIndicator entityType="startup" showSkeleton={true} />
       </div>
+    </div>
     </div>
   )
   }

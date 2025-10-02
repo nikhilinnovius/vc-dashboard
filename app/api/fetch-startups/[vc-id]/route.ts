@@ -18,6 +18,7 @@ export async function GET(request: Request, { params }: { params: { "vc-id": str
     .from("vc_company_relations")
     .select("company_id")
     .eq("vc_id", vcId)
+    .order("company_score", { ascending: false })
     .range(offset, offset + limit - 1)
     
     companyIds = companyIds?.map((company) => company.company_id) || []
