@@ -2,13 +2,10 @@ import React from 'react'
 import Image from "next/image"
 import { LogIn, ChevronDown, X, Filter, Building2, Users, MapPin } from "lucide-react"
 import { Button } from "@/components/ui/button" 
-import { Badge } from "@/components/ui/badge"
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
@@ -31,8 +28,6 @@ interface URLParams {
 interface HeaderSectionProps {
   status: string
   session: any
-  onSignIn: () => void
-  onSignOut: () => void
   onPreferencesOpen: () => void
   onViewSavedItems: (type: "vcs" | "startups") => void
   onVCSelect: (vc: string) => void
@@ -54,8 +49,6 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
       email: "test@example.com",
     },
   },
-  onSignIn,
-  onSignOut,
   onPreferencesOpen,
   onViewSavedItems,
   onVCSelect,
@@ -97,7 +90,6 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
              
       
       <div className="flex w-full flex-wrap items-center justify-center sm:justify-end gap-2 sm:gap-4 sm:w-auto">
-        {status === "authenticated" ? (
           <>
             <BackToAthenaButton className="order-1" />
             <DropdownMenu>
@@ -164,15 +156,6 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
               </DropdownMenuContent>
             </DropdownMenu>
           </>
-        ) : (
-          <Button
-            onClick={onSignIn}
-            className="bg-white/10 text-white hover:bg-white/20 border-white/20 h-10 px-3 py-2 text-sm"
-          >
-            <LogIn className="mr-2 h-4 w-4" />
-            Sign In
-          </Button>
-        )}
       </div>
     </header>
   )
