@@ -54,6 +54,7 @@ export async function middleware(request: NextRequest) {
  * Provides hardcoded authentication for easier development
  */
 async function handleDevelopmentAuth(request: NextRequest) {
+  console.log("[MIDDLEWARE] Development auth handler called")
   const token = await getToken({ req: request })
   const isAuthenticated = true // Hardcoded for development
 
@@ -107,6 +108,7 @@ async function handleDevelopmentAuth(request: NextRequest) {
  */
 async function handleProductionAuth(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl
+  console.log("[MIDDLEWARE] Production auth handler called")
 
   // Check for token in URL parameters
   const token = searchParams.get("token")
