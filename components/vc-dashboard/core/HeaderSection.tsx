@@ -73,11 +73,13 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
       // window.open("https://athena.innoviuscapital.com", "_self")
   }
 
-  console.log('🔍 HeaderSection Debug:', {
+  console.log('HeaderSection Debug:', {
     status,
     session,
     isAuthenticated: status === "authenticated"
   })
+
+  console.log('[HeaderSection] Session:', session)
 
   return (
     <header className="mb-6 flex flex-col items-center justify-between space-y-4 sm:flex-row sm:space-y-0 w-full">
