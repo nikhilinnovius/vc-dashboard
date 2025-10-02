@@ -9,6 +9,7 @@ import { VCCard } from "@/components/VCCard"
 import { NotesModal } from "../modals/NotesModal"
 import { StartupCard } from "@/components/vc-dashboard/core/StartupCard"
 import { type StartupData } from "@/lib/data-utils"
+import { LoadingIndicator } from "@/components/vc-dashboard/shared/LoadingStates"
 
 interface GridViewProps {
   type: "vc" | "startup"
@@ -58,7 +59,6 @@ export function GridView({
   const [isLoading, setIsLoading] = useState(false)
   // State for pagination and UI
   const [currentPage, setCurrentPage] = useState(propCurrentPage || 1)
-
   const itemsPerPage = 20
 
   // Use props for pagination when available, otherwise calculate from external data
@@ -152,6 +152,12 @@ const filteredItems = useMemo(() => {
       <TooltipProvider>
         <div className="text-white text-center py-10">No {type}s found matching your criteria.</div>
       </TooltipProvider>
+    )
+  }
+
+  if (effectiveLoading) {
+    return (
+      <LoadingIndicator entityType={type} showSkeleton={true} />  
     )
   }
 
