@@ -1,6 +1,6 @@
 "use client"
 
-import { getEnvironment } from '@/middleware'
+import { getEnvironment } from '@/app/api/debug/environment/route'
 import { useState, useEffect } from 'react'
 
 interface CustomAuthSession {
