@@ -139,6 +139,9 @@ async function handleProductionAuth(request: NextRequest) {
           exp: user.exp,
         })
 
+        // Delete the bypass-auth cookie, if one exists
+        response.cookies.delete("bypass-auth")
+
         response.cookies.set("auth-session", sessionData, {
           httpOnly: true,
           secure: process.env.NODE_ENV === "production",
@@ -177,6 +180,7 @@ async function handleProductionAuth(request: NextRequest) {
 
       // Session expired - clear cookie and redirect
       const response = NextResponse.redirect(getLoginURL(request))
+      response.cookies.delete("bypass-auth")
       response.cookies.delete("auth-session")
       return response
     }
