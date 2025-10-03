@@ -110,8 +110,6 @@ async function handleProductionAuth(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl
   console.log("[MIDDLEWARE] Production auth handler called")
 
-  
-
   // Check for token in URL parameters
   const token = searchParams.get("token")
 
@@ -172,6 +170,12 @@ async function handleProductionAuth(request: NextRequest) {
     return NextResponse.redirect(getLoginURL(request))
   }
 
+  // Clean up any leftover bypass cookies from development
+  const response = NextResponse.next()
+  response.cookies.delete("bypass-auth")
+  response.cookies.delete("test-user-email") 
+  response.cookies.delete("test-user-name")
+
   try {
     // Validate existing session
     const userData = JSON.parse(sessionCookie.value)
@@ -189,7 +193,7 @@ async function handleProductionAuth(request: NextRequest) {
 
     console.log("[MIDDLEWARE] Valid session found for user:", userData.email)
 
-    return NextResponse.next()
+    return response
   } catch (error) {
     console.error("[MIDDLEWARE] Error parsing session cookie:", error)
 

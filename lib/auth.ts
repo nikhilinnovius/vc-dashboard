@@ -134,11 +134,16 @@ export async function getCurrentUser(): Promise<User | null> {
 }
 
 /**
- * Delete the current session cookie
+ * Delete the current session cookie and clean up bypass cookies
  */
 export async function deleteSession(): Promise<void> {
   const cookieStore = await cookies()
   cookieStore.delete("auth-session")
+  
+  // Also clean up any bypass cookies that might be present
+  cookieStore.delete("bypass-auth")
+  cookieStore.delete("test-user-email")
+  cookieStore.delete("test-user-name")
 }
 
 /**
