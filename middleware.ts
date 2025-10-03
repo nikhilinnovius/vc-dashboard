@@ -2,10 +2,9 @@ import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 import { getToken } from "next-auth/jwt"
 import { verifyToken } from "./lib/auth"
-
 // Environment-based configuration
 // Fallback to NODE_ENV if APP_ENV is not set
-const getEnvironment = () => {
+export const getEnvironment = () => {
   if (process.env.APP_ENV) {
     return process.env.APP_ENV
   }
@@ -29,6 +28,7 @@ const getLoginURL = (request: NextRequest) => {
   console.log(`[MIDDLEWARE] Callback URL: ${callbackUrl}`)
   return `https://athena.innoviuscapital.com/login?callbackUrl=${encodeURIComponent(callbackUrl)}`
 }
+
 
 /**
  * Unified middleware that handles both development and production authentication

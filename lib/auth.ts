@@ -123,6 +123,8 @@ export async function getCurrentUser(): Promise<User | null> {
       return null
     }
 
+    console.log("[getCurrentUser] Session found for user:", userData.email)
+
     return userData
   } catch (error) {
     console.error("Failed to parse session cookie:", error)
