@@ -110,6 +110,8 @@ async function handleProductionAuth(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl
   console.log("[MIDDLEWARE] Production auth handler called")
 
+  
+
   // Check for token in URL parameters
   const token = searchParams.get("token")
 
