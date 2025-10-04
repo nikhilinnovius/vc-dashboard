@@ -150,7 +150,7 @@ export const useVcStore = create<VcStore>()(
       },
 
       // Get VCs for a specific page (frontend pagination)
-      getVcsForPage: (page, itemsPerPage = 20) => {
+      getVcsForPage: (page, itemsPerPage = 50) => {
         const { vcs } = get()
         const startIndex = (page - 1) * itemsPerPage
         const endIndex = startIndex + itemsPerPage
@@ -192,7 +192,7 @@ export const useVcStore = create<VcStore>()(
       },
 
       // Get filtered VCs for a specific page with pagination metadata
-      getFilteredVcsForPage: (page, filterType, locationFilter, itemsPerPage = 20) => {
+      getFilteredVcsForPage: (page, filterType, locationFilter, itemsPerPage = 50) => {
         const { getFilteredVcs } = get()
         const filteredVcs = getFilteredVcs(filterType, locationFilter)
         

@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const page = Number.parseInt(searchParams.get("page") || "1", 10)
-    const limit = Number.parseInt(searchParams.get("limit") || "20", 10)
+    const limit = Number.parseInt(searchParams.get("limit") || "50", 10)
     const filterType = searchParams.get("filterType") as "state" | "city" | null
     const location = searchParams.get("location")
 

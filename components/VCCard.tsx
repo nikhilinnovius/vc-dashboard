@@ -48,7 +48,6 @@ export const VCCard = memo(function VCCard({
     vcScore,
     aum,
     stageDistribution: stage_distribution,
-    numberOfPortfolioCompanies,
   } : VentureData = vcData || {}
 
   console.log('vc', vcData)
@@ -56,11 +55,22 @@ export const VCCard = memo(function VCCard({
 
   const [isImageLoaded, setIsImageLoaded] = useState(false)
   const [localIsSaved, setLocalIsSaved] = useState(isSaved)
+  const [numberOfPortfolioCompanies, setNumberOfPortfolioCompanies] = useState(0)
 
   // Update local state when prop changes
   useEffect(() => {
     setLocalIsSaved(isSaved)
   }, [isSaved])
+
+  // fetch number of portfolio companies using fetch-portfolio-size/[vc-id]
+  useEffect(() => {
+    const fetchPortfolioSize = async () => {
+      const response = await fetch(`/api/fetch-portfolio-size/${id}`)
+      const data = await response.json()
+      setNumberOfPortfolioCompanies(data.portfolioSize || 0)
+    }
+    fetchPortfolioSize()
+  }, [id])
 
   // Handle result coming back from <SaveButton />
   const handleSaveChange = useCallback(

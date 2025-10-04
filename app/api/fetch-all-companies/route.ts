@@ -7,7 +7,7 @@ import { createClient } from "@/utils/supabase/server"
 
 export async function GET(req: Request) {
   const supabase = await createClient()
-  const itemsPerPage = 20 // VCs displayed per page in UI
+  const itemsPerPage = 50 // Companies displayed per page in UI
 
   console.log("Fetching all VCs")
   const startTime = new Date().getTime()

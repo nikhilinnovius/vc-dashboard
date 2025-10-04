@@ -81,7 +81,6 @@ interface StartupCardProps {
   animate?: boolean
   className?: string
   inAffinity?: boolean
-
 }
 
 export const StartupCard = memo(function StartupCard({
@@ -221,10 +220,21 @@ export const StartupCard = memo(function StartupCard({
           
           {/* Company Score */}
           {companyScore !== null && companyScore !== undefined && (
-            <span className="inline-flex items-center gap-1 rounded-md bg-green-50 text-green-700 border border-green-200 px-2 h-7 text-xs font-sm cursor-default ml-2 flex-shrink-0">
-              <Award className="h-3 w-3 text-green-500" />
-              Score: {formatCompanyScore(companyScore)}
-            </span>
+            companyScore > 0 ? (
+              <>
+              <span className="inline-flex items-center gap-1 rounded-md bg-green-50 text-green-700 border border-green-200 px-2 h-7 text-xs font-sm cursor-default ml-2 flex-shrink-0">
+                <Award className="h-3 w-3 text-green-500" />
+                Score: {formatCompanyScore(companyScore)}
+              </span>
+              </>
+            ) : (
+              <>
+              <span className="inline-flex items-center gap-1 rounded-md bg-red-50 text-red-700 border border-red-200 px-2 h-7 text-xs font-sm cursor-default ml-2 flex-shrink-0">
+                <Award className="h-3 w-3 text-red-500" />
+                Score: {formatCompanyScore(companyScore)}
+              </span>
+              </>
+            )
           )}
         </div>
 

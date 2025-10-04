@@ -10,8 +10,8 @@ export async function GET(req: Request) {
 
   const { searchParams } = new URL(req.url)
   const page = Number(searchParams.get("page") ?? "1")
-  const itemsPerPage = 20 // VCs displayed per page in UI
-  const limit = 200 // VCs loaded per API call (10 pages worth)
+  const itemsPerPage = 50 // VCs displayed per page in UI
+  const limit = 250 // VCs loaded per API call (5 pages worth)
   const offset = (page - 1) * limit
 
   console.log("Fetching VCs for page", page)

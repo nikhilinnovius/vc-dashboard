@@ -59,7 +59,7 @@ export function GridView({
   const [isLoading, setIsLoading] = useState(false)
   // State for pagination and UI
   const [currentPage, setCurrentPage] = useState(propCurrentPage || 1)
-  const itemsPerPage = 20
+  const itemsPerPage = 50
 
   // Use props for pagination when available, otherwise calculate from external data
   const totalItems = propTotalItems !== undefined ? propTotalItems : (data ? data.length : 0)
@@ -212,7 +212,7 @@ const filteredItems = useMemo(() => {
                 size="sm"
                 onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
                 disabled={currentPage === 1}
-                className="bg-white/10 text-white hover:bg-white/20 border-white/20"
+                className="bg-white/10 text-gray-500 hover:bg-white/20 border-white/20"
               >
                 <ChevronLeft className="h-4 w-4 mr-1" />
                 Previous
@@ -242,8 +242,8 @@ const filteredItems = useMemo(() => {
                       onClick={() => handlePageChange(pageToShow)}
                       className={
                         pageToShow === currentPage
-                          ? "bg-blue-600 text-white hover:bg-blue-700"
-                          : "bg-white/10 text-white hover:bg-white/20 border-white/20"
+                          ? "bg-green-600 text-white hover:bg-green-700"
+                          : "bg-white/10 text-gray-500 hover:bg-white/20 border-white/20"
                       }
                     >
                       {pageToShow}
@@ -256,7 +256,7 @@ const filteredItems = useMemo(() => {
                 size="sm"
                 onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
                 disabled={currentPage === totalPages}
-                className="bg-white/10 text-white hover:bg-white/20 border-white/20"
+                className="bg-white/10 text-gray-500 hover:bg-white/20 border-white/20"
               >
                 Next
                 <ChevronRight className="h-4 w-4 ml-1" />

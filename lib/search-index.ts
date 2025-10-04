@@ -119,7 +119,7 @@ export class SearchIndex {
   }
 
   // Fast search using the pre-built index
-  search(query: string, limit = 20): SearchableItem[] {
+  search(query: string, limit = 50): SearchableItem[] {
     if (!this.isBuilt || !query.trim()) {
       // Return top items when no query
       return this.items.slice(0, limit)

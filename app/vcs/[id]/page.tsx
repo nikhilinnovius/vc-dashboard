@@ -32,7 +32,6 @@ export default function VCDetailPage({ params }: { params: { id: string } }) {
   const [currentPage, setCurrentPage] = useState(1)
   const [layout, setLayout] = useState<'grid' | 'list'>('grid')
   const [portfolioCompanies, setPortfolioCompanies] = useState<StartupData[]>([])
-  const [allPortfolioCompanies, setAllPortfolioCompanies] = useState<StartupData[]>([])
   const [totalItems, setTotalItems] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
   const [numberOfPortfolioCompanies, setNumberOfPortfolioCompanies] = useState(0)
@@ -75,7 +74,22 @@ export default function VCDetailPage({ params }: { params: { id: string } }) {
       if (!vcId) return
       
       try {
-        const response = await fetch(`/api/fetch-startups/${vcId}?page=${currentPage}`)
+        // Build query parameters for filters
+        const queryParams = new URLSearchParams({
+          page: currentPage.toString()
+        })
+        
+        if (filters.rounds.length > 0) {
+          queryParams.set('rounds', filters.rounds.join(','))
+        }
+        if (filters.endMarkets.length > 0) {
+          queryParams.set('endMarkets', filters.endMarkets.join(','))
+        }
+        if (filters.companyStatuses.length > 0) {
+          queryParams.set('companyStatuses', filters.companyStatuses.join(','))
+        }
+
+        const response = await fetch(`/api/fetch-startups/${vcId}?${queryParams.toString()}`)
         if (!response.ok) {
           throw new Error(`Failed to fetch portfolio companies: ${response.status}`)
         }
@@ -86,52 +100,24 @@ export default function VCDetailPage({ params }: { params: { id: string } }) {
         }
         
         const transformedStartups = data.startups?.map(transformToStartupData) || []
-        setAllPortfolioCompanies(transformedStartups)
         setPortfolioCompanies(transformedStartups)
         setNumberOfPortfolioCompanies(data.numberOfStartups || 0)
         
-        // Calculate pagination based on limit used in API (200 items per page)
-        const itemsPerPage = 200
-        setTotalItems(data.numberOfStartups || 0)
-        setTotalPages(Math.ceil((data.numberOfStartups || 0) / itemsPerPage))
+        // Use server-side pagination data
+        setTotalItems(data.totalItems || 0)
+        setTotalPages(data.totalPages || 0)
       } catch (error) {
         console.error('Error fetching portfolio companies:', error)
       }
     }
 
     fetchPortfolioCompanies()
-  }, [vcId, currentPage])
+  }, [vcId, currentPage, filters])
 
-  // Apply filters to portfolio companies
+  // Reset to page 1 when filters change
   useEffect(() => {
-    let filteredCompanies = [...allPortfolioCompanies]
-
-    // Apply round filters
-    if (filters.rounds.length > 0) {
-      filteredCompanies = filteredCompanies.filter(company => 
-        filters.rounds.includes(company.lastRound || '')
-      )
-    }
-
-    // Apply end market filters
-    if (filters.endMarkets.length > 0) {
-      filteredCompanies = filteredCompanies.filter(company => 
-        filters.endMarkets.includes(company.endMarket || '')
-      )
-    }
-
-    // Apply company status filters
-    if (filters.companyStatuses.length > 0) {
-      filteredCompanies = filteredCompanies.filter(company => 
-        filters.companyStatuses.includes(company.companyStatus || '')
-      )
-    }
-
-    setPortfolioCompanies(filteredCompanies)
-    setTotalItems(filteredCompanies.length)
-    setTotalPages(Math.ceil(filteredCompanies.length / 20)) // 20 items per page for display
-    setCurrentPage(1) // Reset to first page when filters change
-  }, [filters, allPortfolioCompanies])
+    setCurrentPage(1)
+  }, [filters])
 
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage)
@@ -188,7 +174,10 @@ export default function VCDetailPage({ params }: { params: { id: string } }) {
         currentPage={currentPage}
         layout={layout}
         isExternalLoading={isLoading}
+        isInAffinity={true}
       />
+
+      <h3 className="text-lg font-bold text-white mb-2">Not in Portfolio</h3>
     </div>
   )
 }

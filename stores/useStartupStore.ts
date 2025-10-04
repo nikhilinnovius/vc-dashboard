@@ -296,7 +296,7 @@ export const useStartupStore = create<StartupStore>()(
       },
 
       // Get startups for a specific page (frontend pagination)
-      getStartupsForPage: (page, itemsPerPage = 20) => {
+      getStartupsForPage: (page, itemsPerPage = 50) => {
         const { startups } = get()
         const startIndex = (page - 1) * itemsPerPage
         const endIndex = startIndex + itemsPerPage
@@ -365,7 +365,7 @@ export const useStartupStore = create<StartupStore>()(
       },
 
       // Get filtered startups for a specific page with pagination metadata
-      getFilteredStartupsForPage: (page, filterType, locationFilter, roundFilters = [], statusFilters = [], endMarketFilters = [], itemsPerPage = 20) => {
+      getFilteredStartupsForPage: (page, filterType, locationFilter, roundFilters = [], statusFilters = [], endMarketFilters = [], itemsPerPage = 50) => {
         const { getFilteredStartups } = get()
         const filteredStartups = getFilteredStartups(filterType, locationFilter, roundFilters, statusFilters, endMarketFilters)
         

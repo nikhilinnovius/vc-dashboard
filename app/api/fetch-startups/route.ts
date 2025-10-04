@@ -4,7 +4,6 @@
 import { NextResponse } from "next/server"
 import { createClient } from "@/utils/supabase/server"
 
-
 export async function GET(req: Request) {
   const supabase = await createClient()
 
@@ -13,7 +12,7 @@ export async function GET(req: Request) {
   const cardsPerPage = 20 // Companies displayed per page in UI
   const limit = 200 // Companies loaded per API call (10 pages worth)
   const offset = (page - 1) * limit
-
+  
   console.log("Fetching Startups for page", page)
 
   // First, get the total count

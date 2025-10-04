@@ -15,7 +15,6 @@ const roundOptions = [
   "Series B",
   "Series C",
   "Series D", 
-  "Others"
 ]
 
 export const frontendToBackendRoundMap: Record<string, string> = {
@@ -85,7 +84,6 @@ const endMarketOptions = [
 const companyStatusOptions = [
   "Follow-up meeting(s)",
   "Data Room",
-  "Not Available",
   "Cold",
   "Paused",
   "Nurture",
