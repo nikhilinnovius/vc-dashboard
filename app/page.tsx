@@ -24,7 +24,12 @@ export default function Home() {
   
   // Use VcStore for all data management (data fetching handled globally in layout)
   // Use explicit selectors to ensure proper reactivity
-  const { vcs, isLoading, error, totalItems, totalPages, getFilteredVcsForPage } = useVcStore()
+  const vcs = useVcStore(state => state.vcs)
+  const isLoading = useVcStore(state => state.isLoading)
+  const error = useVcStore(state => state.error)
+  const totalItems = useVcStore(state => state.totalItems)
+  const totalPages = useVcStore(state => state.totalPages)
+  const getFilteredVcsForPage = useVcStore(state => state.getFilteredVcsForPage)
   
   // Debug logging
   console.log('Home Page Store State:', { 
@@ -37,13 +42,8 @@ export default function Home() {
   
   const [layout, setLayout] = useState<'grid' | 'list'>('grid') // Add layout state
   
-  // Force fetch if no VCs are loaded and not currently loading
-  useEffect(() => {
-    console.log('🔄 Home page effect - VCs check:', { vcsLength: vcs.length, isLoading })
-    if (vcs.length === 0 && !isLoading) {
-      console.log('🔄 Home page: No VCs found, triggering fetch...')
-    }
-  }, [vcs.length, isLoading])
+  // Data fetching is handled globally in DataInitializer
+  // No need for local fetch logic here
 
   // Get page from URL or default to 1 - ensure it's always a number
   const page = useMemo(() => {
