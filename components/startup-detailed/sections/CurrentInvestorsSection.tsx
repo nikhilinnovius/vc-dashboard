@@ -1,7 +1,6 @@
-import { Building2, Link } from "lucide-react"
+import { Building2 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { SectionHeader } from "../SectionHeader"
-import { StatItem } from "../StatItem"
 import type { StartupData } from "@/lib/data-utils"
 
 interface CurrentInvestorsSectionProps {
@@ -9,7 +8,7 @@ interface CurrentInvestorsSectionProps {
 }
 
 export function CurrentInvestorsSection({ data }: CurrentInvestorsSectionProps) {
-  const hasInvestorData = data.currentInvestors || data.innoviusInvestorConnections || data.innoviusConnected
+  const hasInvestorData = data.currentInvestors || data.innoviusConnected
 
   if (!hasInvestorData) return null
 
@@ -22,27 +21,37 @@ export function CurrentInvestorsSection({ data }: CurrentInvestorsSectionProps) 
       <div className="space-y-3">
         {data.currentInvestors && (
           <div className="space-y-2">
-            {/* <div className="text-sm text-white/60">Current Investors</div> */}
             <div className="flex flex-wrap gap-2">
-               {data.currentInvestors.map((investor, index) => (
-                 <Badge
-                   key={`investor-${index}`}
-                   variant="outline"
-                   className="bg-white/5 hover:bg-white/10 text-white border-0 px-4 py-2 text-sm"
-                 >
-                   {investor}
-                 </Badge>
-               ))}
+              {data.currentInvestors.map((investor, index) => {
+                const innoviusConnectionsRaw = data.innoviusInvestorConnections
+                const innoviusConnectionsList = Array.isArray(innoviusConnectionsRaw)
+                  ? innoviusConnectionsRaw
+                  : (innoviusConnectionsRaw || "")
+                      .split(";")
+                      .map((s) => s.trim())
+                      .filter(Boolean)
+
+                const innoviusSet = new Set(
+                  innoviusConnectionsList.map((name) => name.toLowerCase()),
+                )
+                const isInnoviusConnected = innoviusSet.has(investor.toLowerCase())
+
+                return (
+                  <Badge
+                    key={`investor-${index}`}
+                    variant="outline"
+                    className={
+                      isInnoviusConnected
+                        ? "bg-white text-black border-0 px-4 py-2 text-sm"
+                        : "bg-white/5 hover:bg-white/10 text-white border-0 px-4 py-2 text-sm"
+                    }
+                  >
+                    {investor}
+                  </Badge>
+                )
+              })}
             </div>
           </div>
-        )}
-  
-        {data.innoviusInvestorConnections && (
-          <StatItem
-            label="Innovius Investor Connections"
-            value={data.innoviusInvestorConnections}
-            icon={<Link className="h-4 w-4 text-white" />}
-          />
         )}
       </div>
     </section>

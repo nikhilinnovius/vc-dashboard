@@ -75,6 +75,7 @@ export function transformNonQualifiedStartupData(rawStartup: any): StartupData {
     city: rawStartup.city ?? undefined,
     description: rawStartup.description ?? undefined,
     totalRaised: rawStartup.total_raised ?? undefined,
+    inAffinity: false, // Non-qualified startups are not in Affinity
   }
 }
 
