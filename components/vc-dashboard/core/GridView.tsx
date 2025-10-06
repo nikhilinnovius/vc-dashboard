@@ -92,6 +92,40 @@ export function GridView({
     setIsNoteDialogOpen(true)
   }, [])
 
+  // Parent handles network: save VC via GET /api/save/vc/[id] on save only
+  const handleVCSaveChange = useCallback(async (vcId: string, saved: boolean) => {
+    console.log('VC save toggled', { vcId, saved })
+    if (!saved) return
+    try {
+      const response = await fetch(`/api/save/vc/${encodeURIComponent(vcId)}`)
+      if (!response.ok) {
+        console.error('Failed to save VC', response.statusText)
+      } else {
+        const data = await response.json()
+        console.log('VC save response', data)
+      }
+    } catch (err) {
+      console.error('Error saving VC', err)
+    }
+  }, [])
+
+  const handleStartupSaveChange = useCallback(async (startupId: string, saved: boolean) => {
+    console.log('Startup save toggled', { startupId, saved })
+    if (!saved) return
+    try {
+      const response = await fetch(`/api/save/startup/${encodeURIComponent(startupId)}`)
+      if (!response.ok) {
+        console.error('Failed to save Startup', response.statusText)
+      } else {
+        const data = await response.json()
+        console.log('Startup save response', data)
+      }
+    } catch (err) {
+      console.error('Error saving Startup', err)
+    }
+    }, [])
+
+
   const handlePageChange = useCallback(
     (page: number) => {
       setCurrentPage(page)
@@ -185,6 +219,7 @@ const filteredItems = useMemo(() => {
                 animate={true}
                 isSaved={false}
                 onNoteClick={handleNoteClick}
+                onSaveChange={handleVCSaveChange}
               />
             ) : (
               <StartupCard
@@ -195,6 +230,7 @@ const filteredItems = useMemo(() => {
                 animate={true}
                 isSaved={false}
                 onNoteClick={handleNoteClick}
+                onSaveChange={handleStartupSaveChange}
               />
             )
           ))}
