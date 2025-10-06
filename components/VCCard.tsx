@@ -183,7 +183,7 @@ export const VCCard = memo(function VCCard({
             href={website.startsWith("http") ? website : `https://${website}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center text-sm text-blue-500 hover:text-blue-600 mb-2"
+            className="inline-flex items-center text-sm text-blue-500 hover:text-blue-600 hover:underline mb-2"
             onClick={(e) => e.stopPropagation()}
           >
             {website}
