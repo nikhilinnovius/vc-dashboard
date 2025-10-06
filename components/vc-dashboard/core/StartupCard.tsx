@@ -1,10 +1,11 @@
-// "use client"
+"use client"
 
 import React, { memo, useState, useEffect, useCallback } from "react"
 import { motion } from "framer-motion"
+import { useRouter } from "next/navigation"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { FileText, ExternalLink, Award, DollarSign, Rocket } from "lucide-react"
+import { FileText, ExternalLink, Award, DollarSign, Rocket, AlertCircle, Compass, Radar } from "lucide-react"
 import { CompanyLogo } from "@/components/vc-dashboard/core/OrgIcon"
 import { SaveButton } from "@/components/SaveButton"
 import { EnhancedTooltip } from "@/components/enhanced-tooltip"
@@ -80,7 +81,6 @@ interface StartupCardProps {
   onSaveChange?: (startupId: string, saved: boolean) => void
   animate?: boolean
   className?: string
-  inAffinity?: boolean
 }
 
 export const StartupCard = memo(function StartupCard({
@@ -92,8 +92,9 @@ export const StartupCard = memo(function StartupCard({
   onSaveChange,
   animate = false,
   className = "",
-  inAffinity = true,
 }: StartupCardProps) {
+  const router = useRouter()
+  
   // Extract startup attributes for cleaner code
   const {
     id,
@@ -107,6 +108,7 @@ export const StartupCard = memo(function StartupCard({
     companyStatus,
     endMarket,
     totalRaised,
+    inAffinity,
   } = startupData || {}
 
 
@@ -136,7 +138,10 @@ export const StartupCard = memo(function StartupCard({
   )
 
   const handleCardClick = () => {
-    window.location.href = `/startups/${id}`
+    if (inAffinity) {
+      router.push(`/startups/${id}`)
+    }
+    // If inAffinity is false, do nothing
   }
 
   // Card styling based on layout and saved state
@@ -197,6 +202,14 @@ export const StartupCard = memo(function StartupCard({
                 {companyStatus}
               </span>
             )}
+
+            {/* NotIn Affinity  Status Pill - COMMENTED OUT */} 
+            {/* {!inAffinity && (
+              <span className="inline-flex items-center gap-1 rounded-md bg-amber-50 text-amber-700 border border-amber-200 px-2 h-6 text-xs font-sm cursor-default flex-shrink-0 ml-2 mt-1">
+                <Compass className="h-3 w-3 text-amber-500" />  
+                NQ
+              </span>
+            )} */}
           </div>
         )}
 
@@ -208,7 +221,7 @@ export const StartupCard = memo(function StartupCard({
               href={website.startsWith("http") ? website : `https://${website}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center text-sm text-black-500 hover:underline hover:text-blue-600 line-clamp-1 min-w-0"
+              className="flex items-center text-sm text-black-500 hover:underline hover:text-blue-600 min-w-0"
               onClick={(e) => e.stopPropagation()}
             >
               {website.replace(/^https?:\/\//, '')} 
@@ -313,6 +326,11 @@ export const StartupCard = memo(function StartupCard({
         <div className={isGrid ? "" : "mt-2 self-end"}>
           {inAffinity && renderActionButtons()}
         </div>
+
+        {/* Amber diagonal notch for startups not in affinity */}
+        {!inAffinity && (
+          <div className="absolute top-0 right-0 w-0 h-0 border-l-[20px] border-l-transparent border-t-[20px] border-t-orange-500/80 backdrop-blur-lg"></div>
+        )}
       </CardContent>
     )
   }  

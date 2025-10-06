@@ -98,7 +98,6 @@ export default function VCDetailPage({ params }: { params: { id: string } }) {
         if (data.error) {
           throw new Error(data.error)
         }
-        
         const transformedStartups = data.startups?.map(transformToStartupData) || []
         setPortfolioCompanies(transformedStartups)
         setNumberOfPortfolioCompanies(data.numberOfStartups || 0)
@@ -174,7 +173,6 @@ export default function VCDetailPage({ params }: { params: { id: string } }) {
         currentPage={currentPage}
         layout={layout}
         isExternalLoading={isLoading}
-        isInAffinity={true}
       />
 
       <h3 className="text-lg font-bold text-white mb-2">Not in Portfolio</h3>

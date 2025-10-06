@@ -27,7 +27,6 @@ interface GridViewProps {
   isPortfolio?: boolean
   data: any[]
   layout?: 'grid' | 'list'
-  isInAffinity?: boolean
 
   // Pagination props
   totalItems?: number
@@ -50,7 +49,6 @@ export function GridView({
   currentPage: propCurrentPage, 
   type,
   layout="grid",
-  isInAffinity = true,
   isExternalLoading = false,
 }: GridViewProps) {
   const [selectedItemForNote, setSelectedItemForNote] = useState<string | null>(null)
@@ -176,7 +174,6 @@ const filteredItems = useMemo(() => {
                 index={index}
                 animate={true}
                 isSaved={false}
-                onClick={() => handleVCSelect((item as VentureData).id)}
                 onNoteClick={handleNoteClick}
               />
             ) : (
@@ -188,7 +185,6 @@ const filteredItems = useMemo(() => {
                 animate={true}
                 isSaved={false}
                 onNoteClick={handleNoteClick}
-                inAffinity={isInAffinity}
               />
             )
           ))}

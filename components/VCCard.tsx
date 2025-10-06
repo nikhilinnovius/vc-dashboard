@@ -11,14 +11,13 @@ import { memo, useState, useEffect, useCallback } from "react"
 import { SaveButton } from "@/components/SaveButton"
 import { EnhancedTooltip } from "@/components/enhanced-tooltip"
 import type { VentureData } from "@/lib/data-utils"
-import { redirect } from "next/navigation"
+import { redirect, useRouter } from "next/navigation"
 
 interface VCCardProps {
   vcData: VentureData
   layout?: "list" | "grid"
   index?: number
   isSaved?: boolean
-  onClick?: () => void
   onNoteClick?: (vcName: string, website: string) => void
   onSaveChange?: (vcId: string, saved: boolean) => void
   animate?: boolean
@@ -30,12 +29,12 @@ export const VCCard = memo(function VCCard({
   layout = "list",
   index = 0,
   isSaved = false,
-  onClick, 
   onNoteClick,
   onSaveChange,
   animate = false,
   className = "",
 }: VCCardProps) {
+  const router = useRouter()
 
   // Extract VC attributes for cleaner code
   const {
@@ -89,9 +88,10 @@ export const VCCard = memo(function VCCard({
     [name, website, onNoteClick],
   )
 
-  const handleCardClick = useCallback(() => {
-    onClick?.()
-  }, [onClick])
+  const handleCardClick = () => {
+      router.push(`/vcs/${id}`)
+    // If inAffinity is false, do nothing
+  }
 
   // Determine card styling based on variant
   const getCardStyles = () => {

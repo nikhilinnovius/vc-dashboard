@@ -25,12 +25,7 @@ export function FundingSection({ data }: FundingSectionProps) {
          <div className="bg-white/5 p-3 rounded-lg">
            <div className="text-sm text-white/60 mb-1">Last Round</div>
            <div className="text-lg font-medium text-white">
-             {data.lastRound}
-             {data.recentFunding && (
-               <span className="text-sm font-normal text-white/60 ml-1">
-                 {LAST_FUNDING_LABELS[data.recentFunding]}
-               </span>
-             )}
+             {LAST_FUNDING_LABELS[data.lastRound]}
            </div>
          </div>
        )}

@@ -12,17 +12,11 @@ import {
 import { InstantSearchCommand } from "@/components/instant-search-command"
 import { BackToAthenaButton } from "@/components/vc-dashboard/core/BackToAthena"
 import { Suspense } from "react"
-import { useRouter, usePathname, redirect } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 
-// Types
-interface URLParams {
-  vc?: string | null
-  startup?: string | null
-  entityType?: string | null
-  filterType?: string | null
-  location?: string | null
-  saved?: string | null
-  page?: string | null
+const capitalizeFirstLetter = (string: string) => {
+  if (!string) return ""
+  return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
 interface HeaderSectionProps {
@@ -34,11 +28,6 @@ interface HeaderSectionProps {
   onStartupSelect: (startup: string) => void
   onLocationFilterOpen: () => void
   // onResetToHome: () => void
-}
-
-const capitalizeFirstLetter = (string: string) => {
-  if (!string) return ""
-  return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
 export const HeaderSection: React.FC<HeaderSectionProps> = ({
