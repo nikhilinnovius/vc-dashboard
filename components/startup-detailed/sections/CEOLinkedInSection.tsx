@@ -1,6 +1,6 @@
 import { User, Linkedin } from "lucide-react"
 import { SectionHeader } from "../SectionHeader"
-import type { StartupData } from "@/types/startup"
+import type { StartupData } from "@/lib/data-utils"
 
 interface CEOLinkedInSectionProps {
   ceoLinkedin: string

@@ -1,12 +1,20 @@
 import { NextResponse } from "next/server"
 import { kv } from "@vercel/kv"
-import { getServerSession } from "next-auth/next"
-import { authOptions } from "@/lib/auth"
+import { getCurrentUser } from "@/lib/auth"
+import { getEnvironment } from "@/middleware"
 
 export async function POST(request: Request) {
-  const session = await getServerSession(authOptions)
-  if (!session || !session.user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  let environment = getEnvironment()
+
+  let userId = null
+  if (environment !== 'development') {
+    const user = await getCurrentUser()
+    if (!user || !user.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+    userId = user.id
+  } else {
+    userId = 'testuserid123##'
   }
 
   try {
@@ -15,7 +23,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Missing startup ID" }, { status: 400 })
     }
 
-    const userId = session.user.id
     await kv.sadd(`user:${userId}:saved_startups`, id)
 
     console.log(`Saved startup ${id} for user ${userId}`)

@@ -28,7 +28,7 @@ export interface VentureData {
 export interface StartupData {
   id: string
   name: string
-  website?: string
+  website: string
   city?: string
   state?: string
   description?: string

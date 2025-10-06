@@ -1,14 +1,13 @@
 import { DollarSign } from "lucide-react"
 import { SectionHeader } from "../SectionHeader"
 import { formatNumber } from "@/utils/startup-utils"
-import { StartupData } from "@/types/startup"
+import { StartupData } from "@/lib/data-utils"
 import { LAST_FUNDING_LABELS } from "@/components/vc-dashboard/core/StartupCard"
 
 
 interface FundingSectionProps {
  data: StartupData
 }
-
 
 export function FundingSection({ data }: FundingSectionProps) {
  const hasFundingData = data.lastRound || data.lastFundingAmount || data.totalRaised

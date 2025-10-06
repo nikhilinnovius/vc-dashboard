@@ -29,11 +29,11 @@ interface AffinityNote {
 interface AffinityNotesProps {
   domain: string
   name?: string
+  organizationId: number | string
 }
 
-export function AffinityNotes({ domain, name }: AffinityNotesProps) {
+export function AffinityNotes({ domain, name, organizationId }: AffinityNotesProps) {
   const [notes, setNotes] = useState<AffinityNote[]>([])
-  const [organizationId, setOrganizationId] = useState<number | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isCreating, setIsCreating] = useState(false)
   const [isEditing, setIsEditing] = useState<number | null>(null)
@@ -79,16 +79,17 @@ export function AffinityNotes({ domain, name }: AffinityNotesProps) {
       }
 
       const data = await response.json()
+      console.log("Data:", data)
       console.log("Notes fetched successfully:", data)
 
       // Ensure each note has an author property
-      const processedNotes = (data.notes || []).map((note) => ({
+      const processedNotes = (data.notes || []).map((note: any) => ({
         ...note,
         author: note.author || note.creator_name || "Unknown",
       }))
 
       setNotes(processedNotes)
-      setOrganizationId(data.organization_id)
+      // setOrganizationId(data.organization_id)
     } catch (err) {
       console.error("Error fetching notes:", err)
       setError(err instanceof Error ? err.message : "An error occurred while fetching notes")
@@ -103,26 +104,33 @@ export function AffinityNotes({ domain, name }: AffinityNotesProps) {
   }
 
   const handleCreateNote = async () => {
-    if (!organizationId) {
-      toast({
-        title: "Error",
-        description: "Organization not found. Cannot create note.",
-        variant: "destructive",
-      })
-      return
-    }
-
     try {
       setIsCreating(true)
 
-      const response = await fetch("/api/affinity/notes", {
+      // Build the query string with both domain and name if available
+      const queryParams = new URLSearchParams()
+
+      if (name) {
+        queryParams.append("name", name)
+        console.log(`Using name for lookup: ${name}`)
+      }
+
+      if (domain) {
+        // Ensure domain is clean before sending to API
+        const cleanDomain = domain.replace(/^(https?:\/\/)?(www\.)?/i, "").split("/")[0]
+        queryParams.append("domain", cleanDomain)
+        console.log(`Using domain for lookup: ${cleanDomain}`)
+      }
+
+      const response = await fetch(`/api/affinity/notes?${queryParams.toString()}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          organization_id: organizationId,
           content: noteContent,
+          domain: domain ? domain.replace(/^(https?:\/\/)?(www\.)?/i, "").split("/")[0] : undefined,
+          name: name,
         }),
       })
 

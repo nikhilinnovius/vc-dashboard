@@ -12,6 +12,7 @@ interface CompanyLogoProps {
   className?: string
   type?: "vc" | "startup"
   onLoad?: () => void
+  priority?: number
 }
 
 // Memoized component for better performance
@@ -22,14 +23,17 @@ export const CompanyLogo = memo(function CompanyLogo({
   className = "",
   type = "startup",
   onLoad,
+  priority = 0,
 }: CompanyLogoProps) {
   const [imageError, setImageError] = useState(false)
   const [imageLoaded, setImageLoaded] = useState(false)
-  const { logoUrl, isLoading, error, retry } = useCompanyLogo(domain, name)
+  const { logoUrl, isLoading, error, retry } = useCompanyLogo(domain, name, priority)
 
   const handleImageLoad = useCallback(() => {
+    console.log('image loaded')
     setImageLoaded(true)
     setImageError(false)
+    console.log('isLoading', isLoading)
     onLoad?.()
   }, [onLoad])
 
@@ -37,10 +41,10 @@ export const CompanyLogo = memo(function CompanyLogo({
     setImageError(true)
     setImageLoaded(false)
     // Add automatic retry once on error
-    if (!imageError && logoUrl) {
+    if (logoUrl) {
       retry()
     }
-  }, [imageError, logoUrl, retry])
+  }, [logoUrl, retry])
 
   const shouldShowFallback = !logoUrl || imageError || error
 

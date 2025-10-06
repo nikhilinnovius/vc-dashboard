@@ -10,6 +10,7 @@ import { NotesModal } from "../modals/NotesModal"
 import { StartupCard } from "@/components/vc-dashboard/core/StartupCard"
 import { type StartupData } from "@/lib/data-utils"
 import { LoadingIndicator } from "@/components/vc-dashboard/shared/LoadingStates"
+import { LogoPreloader } from "@/components/LogoPreloader"
 
 interface GridViewProps {
   type: "vc" | "startup"
@@ -52,9 +53,10 @@ export function GridView({
   isExternalLoading = false,
 }: GridViewProps) {
   const [selectedItemForNote, setSelectedItemForNote] = useState<string | null>(null)
-  const [selectedItemWebsite, setSelectedItemWebsite] = useState<string>("")
+  const [websiteForNoteDialog, setWebsiteForNoteDialog] = useState<string>("")
   const [isNoteDialogOpen, setIsNoteDialogOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  
   // State for pagination and UI
   const [currentPage, setCurrentPage] = useState(propCurrentPage || 1)
   const itemsPerPage = 50
@@ -86,11 +88,7 @@ export function GridView({
 
   const handleNoteClick = useCallback((itemName: string, website: string) => {
     setSelectedItemForNote(itemName)
-    let cleanWebsite = website
-    if (website) {
-      cleanWebsite = website.replace(/^(https?:\/\/)?(www\.)?/i, "").split("/")[0]
-    }
-    setSelectedItemWebsite(cleanWebsite)
+    setWebsiteForNoteDialog(website)
     setIsNoteDialogOpen(true)
   }, [])
 
@@ -145,17 +143,19 @@ const filteredItems = useMemo(() => {
   // Use external loading state if provided, otherwise use local loading state
   const effectiveLoading = isExternalLoading || isLoading
 
-  if (!effectiveLoading && (!data || !Array.isArray(data) || data.length === 0)) {
+  // Show loading if we're loading or if data is not yet available
+  if (effectiveLoading || !data || !Array.isArray(data)) {
+    return (
+      <LoadingIndicator entityType={type} showSkeleton={true} />  
+    )
+  }
+
+  // Only show "no items found" if we have confirmed empty data
+  if (data.length === 0) {
     return (
       <TooltipProvider>
         <div className="text-white text-center py-10">No {type}s found matching your criteria.</div>
       </TooltipProvider>
-    )
-  }
-
-  if (effectiveLoading) {
-    return (
-      <LoadingIndicator entityType={type} showSkeleton={true} />  
     )
   }
 
@@ -164,6 +164,16 @@ const filteredItems = useMemo(() => {
   return (
     <TooltipProvider>
       <div>
+        {/* Logo Preloader for next page */}
+        {type === "startup" && (
+          <LogoPreloader
+            startups={data}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            itemsPerPage={itemsPerPage}
+          />
+        )}
+        
         <div className={layout === 'grid' ? "grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" : "grid gap-4 sm:gap-6 grid-cols-1"}>
           {filteredItems.map((item, index) => (
             type === "vc" ? (
@@ -264,7 +274,7 @@ const filteredItems = useMemo(() => {
           isOpen={isNoteDialogOpen}
           onOpenChange={setIsNoteDialogOpen}
           selectedVC={selectedItemForNote || ""}
-          vcWebsite={selectedItemWebsite}
+          website={websiteForNoteDialog}
         />
       </div>
     </TooltipProvider>

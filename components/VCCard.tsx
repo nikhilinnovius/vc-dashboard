@@ -168,9 +168,13 @@ export const VCCard = memo(function VCCard({
 
       {/* VC Name, City, and Website */}
       <div className="flex-1 min-w-0 overflow-hidden">
-        <EnhancedTooltip title={name} description={showDescription ? (description || "") : ""}>
-          <h3 className="text-base sm:text-lg font-semibold line-clamp-2 mb-1">{name}</h3>
-        </EnhancedTooltip>
+        <div className="flex items-baseline gap-1 mb-2">
+          <h3 className="text-base sm:text-lg font-semibold line-clamp-2 mr-0.5">{name}</h3>
+          <EnhancedTooltip title={name} description={showDescription ? (description || "") : ""}>
+          {/* decrease icon size */}
+            <span className="sr-only">Info</span>
+          </EnhancedTooltip>
+        </div>
 
         {(city || state) && (
           <p className="text-sm text-muted-foreground line-clamp-1 mb-3">

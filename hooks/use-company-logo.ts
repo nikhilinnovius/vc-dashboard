@@ -39,6 +39,55 @@ const cleanupCache = () => {
 // Batch logo requests to reduce server load
 const pendingRequests = new Map<string, Promise<string | null>>()
 
+// Priority queue for logo loading
+interface LogoRequest {
+  domain: string
+  priority: number
+  resolve: (url: string | null) => void
+  reject: (error: Error) => void
+}
+
+const logoQueue: LogoRequest[] = []
+const MAX_CONCURRENT_REQUESTS = 3
+let activeRequests = 0
+let isProcessingQueue = false
+
+// Process the logo queue with priority
+const processLogoQueue = async () => {
+  if (isProcessingQueue || logoQueue.length === 0) return
+  
+  isProcessingQueue = true
+  
+  while (logoQueue.length > 0 && activeRequests < MAX_CONCURRENT_REQUESTS) {
+    // Sort by priority (higher number = higher priority)
+    logoQueue.sort((a, b) => b.priority - a.priority)
+    
+    const batch = logoQueue.splice(0, MAX_CONCURRENT_REQUESTS - activeRequests)
+    
+    // Process batch concurrently
+    const batchPromises = batch.map(async (request) => {
+      activeRequests++
+      try {
+        const url = await fetchLogo(request.domain)
+        request.resolve(url)
+      } catch (error) {
+        request.reject(error instanceof Error ? error : new Error('Failed to fetch logo'))
+      } finally {
+        activeRequests--
+      }
+    })
+    
+    await Promise.all(batchPromises)
+    
+    // Small delay between batches
+    if (logoQueue.length > 0) {
+      await new Promise(resolve => setTimeout(resolve, 100))
+    }
+  }
+  
+  isProcessingQueue = false
+}
+
 const fetchLogo = async (domain: string): Promise<string | null> => {
   if (!domain) return null
 
@@ -72,7 +121,7 @@ const fetchLogo = async (domain: string): Promise<string | null> => {
   return request
 }
 
-export function useCompanyLogo(domain: string | undefined, name: string) {
+export function useCompanyLogo(domain: string | undefined, name: string, priority: number = 0) {
   const [logoUrl, setLogoUrl] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -87,7 +136,7 @@ export function useCompanyLogo(domain: string | undefined, name: string) {
   }, [])
 
   const loadLogo = useCallback(
-    async (targetDomain: string) => {
+    async (targetDomain: string, targetPriority: number) => {
       if (!targetDomain) {
         setLogoUrl(null)
         setIsLoading(false)
@@ -125,44 +174,49 @@ export function useCompanyLogo(domain: string | undefined, name: string) {
         loading: true,
       }
 
-      try {
-        const url = await fetchLogo(cleaned)
-
-        // Update cache
-        logoCache[cleaned] = {
-          url,
-          timestamp: Date.now(),
-          loading: false,
+      // Add to priority queue
+      const request: LogoRequest = {
+        domain: cleaned,
+        priority: targetPriority,
+        resolve: (url) => {
+          // Update cache
+          logoCache[cleaned] = {
+            url,
+            timestamp: Date.now(),
+            loading: false,
+          }
+          setLogoUrl(url)
+          setError(null)
+          setIsLoading(false)
+        },
+        reject: (err) => {
+          const errorMessage = err.message || "Failed to load logo"
+          setError(errorMessage)
+          // Cache the error result
+          logoCache[cleaned] = {
+            url: null,
+            timestamp: Date.now(),
+            loading: false,
+          }
+          setIsLoading(false)
         }
-
-        setLogoUrl(url)
-        setError(null)
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : "Failed to load logo"
-        setError(errorMessage)
-
-        // Cache the error result
-        logoCache[cleaned] = {
-          url: null,
-          timestamp: Date.now(),
-          loading: false,
-        }
-      } finally {
-        setIsLoading(false)
       }
+
+      logoQueue.push(request)
+      processLogoQueue()
     },
     [cleanDomain],
   )
 
   useEffect(() => {
     if (domain) {
-      loadLogo(domain)
+      loadLogo(domain, priority)
     } else {
       setLogoUrl(null)
       setIsLoading(false)
       setError(null)
     }
-  }, [domain, loadLogo])
+  }, [domain, priority, loadLogo])
 
   // Cleanup cache periodically
   useEffect(() => {
@@ -174,7 +228,7 @@ export function useCompanyLogo(domain: string | undefined, name: string) {
     logoUrl,
     isLoading,
     error,
-    retry: () => domain && loadLogo(domain),
+    retry: () => domain && loadLogo(domain, priority),
   }
 }
 

@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 import { useVcStore } from '@/stores/useVcStore'
 import { useStartupStore } from '@/stores/useStartupStore'
 import { useSearchPoolSync } from '@/stores/useSearchPool'
+import { warmupLogoCache } from '@/lib/cache-warmer'
 
 /**
  * DataInitializer - Global data fetching and search pool initialization
@@ -51,12 +52,17 @@ export function DataInitializer() {
     }
   }, []) // Empty dependency array - only run once on mount
 
-  // Log when everything is ready (only once)
+  // Log when everything is ready and warm up cache (only once)
   useEffect(() => {
     if (isInitialized && !vcLoading && !startupLoading) {
       console.log(`✅ Global data ready: ${vcCount} VCs, ${companyCount} companies, ${totalItems} total searchable items`)
+      
+      // Warm up cache for top companies to improve cold start performance
+      if (startups.length > 0) {
+        warmupLogoCache(startups).catch(console.error)
+      }
     }
-  }, [isInitialized, vcLoading, startupLoading, vcCount, companyCount, totalItems])
+  }, [isInitialized, vcLoading, startupLoading, vcCount, companyCount, totalItems, startups])
 
   // This component doesn't render anything - it's just for data initialization
   return null

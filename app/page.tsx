@@ -67,11 +67,12 @@ export default function Home() {
   // }, [getFilteredVcsForPage, page, filterType, locationFilter])
 
   const { vcs: displayedVCs, totalItems: filteredTotalItems, totalPages: filteredTotalPages } = useMemo(() => {
-    if (isLoading || vcs.length === 0) {
+    // Only return empty data if we're actually loading, not just if vcs.length === 0
+    if (isLoading) {
       return { vcs: [], totalItems: 0, totalPages: 0 }
     }
     return getFilteredVcsForPage(page, filterType, locationFilter, 20)
-  }, [getFilteredVcsForPage, page, filterType, locationFilter, isLoading, vcs.length])
+  }, [getFilteredVcsForPage, page, filterType, locationFilter, isLoading])
   
   
   // Data fetching is now handled globally in layout.tsx via DataInitializer
@@ -94,8 +95,8 @@ export default function Home() {
     updateURL({ ...params, page: "1" })
   }
 
-  // Show loading state if loading OR if no VCs are loaded yet
-  if (isLoading || (vcs.length === 0 && displayedVCs.length === 0)) {
+  // Show loading state if loading OR if no VCs are loaded yet (to handle race condition)
+  if (isLoading || (vcs.length === 0 && !error)) {
     // Skeleton grid with 20 cards
     return (
       <div className="text-white">

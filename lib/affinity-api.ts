@@ -169,7 +169,7 @@ export async function getNotes(organizationId: number, userEmail?: string) {
 
     // Fetch creator information for each note
     const notesWithCreators = await Promise.all(
-      notes.map(async (note) => {
+      notes.map(async (note: any) => {
         if (note.creator_id) {
           try {
             const creator = await getPersonById(note.creator_id, userEmail)
@@ -216,22 +216,35 @@ export async function getPersonDetails(personId: number, userEmail?: string) {
 // Create a note for an organization
 export async function createNote(organizationId: number, content: string, userEmail?: string) {
   try {
+    console.log("Creating note with organizationId:", organizationId, "content:", content, "userEmail:", userEmail)
+    
     const headers = await getAffinityHeaders(userEmail)
+    console.log("Using headers:", headers)
+    
+    const requestBody = {
+      organization_ids: [organizationId],
+      content,
+    }
+    console.log("Request body:", requestBody)
+    
     const response = await fetch("https://api.affinity.co/notes", {
       method: "POST",
       headers,
-      body: JSON.stringify({
-        organization_ids: [organizationId],
-        content,
-      }),
+      body: JSON.stringify(requestBody),
     })
+
+    console.log("Response status:", response.status)
+    console.log("Response headers:", Object.fromEntries(response.headers.entries()))
 
     if (!response.ok) {
       const errorText = await response.text()
+      console.error("Affinity API error response:", errorText)
       throw new Error(`Affinity API error: ${response.status} ${errorText}`)
     }
 
-    return await response.json()
+    const result = await response.json()
+    console.log("Note created successfully:", result)
+    return result
   } catch (error) {
     console.error("Error creating note:", error)
     throw error

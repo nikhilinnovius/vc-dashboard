@@ -5,6 +5,7 @@ import { useURLState } from "@/hooks/use-url-state"
 import { GridView } from "@/components/vc-dashboard/core/GridView"
 import { FilterForStartups } from "@/components/vc-dashboard/filter/FilterForStartups"
 import { useStartupStore } from "@/stores"
+import { LogoDebugger } from "@/components/LogoDebugger"
 
 export default function StartupsPage() {
   const { 
@@ -24,7 +25,6 @@ export default function StartupsPage() {
     error, 
     totalItems, 
     totalPages,
-    fetchStartups,
     getFilteredStartupsForPage
   } = useStartupStore()
 
@@ -50,7 +50,7 @@ export default function StartupsPage() {
     totalItems: filteredTotalItems, 
     totalPages: filteredTotalPages 
   } = useMemo(() => {
-    return getFilteredStartupsForPage(
+    const result = getFilteredStartupsForPage(
       page, 
       filterType, 
       locationFilter, 
@@ -59,7 +59,18 @@ export default function StartupsPage() {
       additionalFilters.endMarkets,
       20
     )
-  }, [getFilteredStartupsForPage, page, filterType, locationFilter, additionalFilters])
+    
+    // Debug logging
+    console.log('🔍 Startups Page - displayedStartups calculation:', {
+      isLoading,
+      startupsLength: startups.length,
+      displayedStartupsLength: result.startups.length,
+      filteredTotalItems: result.totalItems,
+      firstStartup: result.startups[0]
+    })
+    
+    return result
+  }, [getFilteredStartupsForPage, page, filterType, locationFilter, additionalFilters, isLoading, startups.length])
 
   // Sync additionalFilters with URL parameters
   useEffect(() => {
@@ -70,14 +81,8 @@ export default function StartupsPage() {
     })
   }, [rounds, endMarkets, companyStatuses])
 
-  // Fetch all startups once when component mounts
-  useEffect(() => {
-    // Only fetch if we don't have data yet
-    if (startups.length === 0 && !isLoading) {
-      console.log('Fetching all startups...')
-      fetchStartups()
-    }
-  }, [startups.length, isLoading, fetchStartups])
+  // Data fetching is handled globally by DataInitializer
+  // No need to fetch here - data will be available from global store
 
   const handlePageChange = (newPage: number) => {
     updateURL({ page: newPage.toString() })
@@ -119,7 +124,17 @@ export default function StartupsPage() {
     updateURL({ ...params, page: "1" })
   }
 
-  if (isLoading) {
+  // Debug logging for loading state
+  console.log('🔍 Startups Page - Loading check:', {
+    isLoading,
+    startupsLength: startups.length,
+    error,
+    displayedStartupsLength: displayedStartups.length,
+    shouldShowLoading: isLoading || (startups.length === 0 && !error)
+  })
+
+  // Show loading state if we're loading OR if we have no data yet (to handle race condition)
+  if (isLoading || (startups.length === 0 && !error)) {
     return <div className="text-white text-center py-10">Loading startups...</div>
   }
 

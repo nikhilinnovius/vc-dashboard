@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 import { useData } from "@/context/data-context"
-import type { StartupData } from "@/types/startup"
+import type { StartupData } from "@/lib/data-utils"
 
 export function useStartupData(startup: string): StartupData | null {
   const { startups } = useData()

@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { CompanyLogo } from "@/components/vc-dashboard/core/OrgIcon"
 import { SaveButton } from "@/components/SaveButton"
-import { AffinityNotes } from "@/components/affinity-notes"
+import { AffinityNotes } from "@/components/AffinityNotesSection"
 // import { AffinityPeople } from "@/components/affinity-people"
 
 // New imports for refactored components
@@ -204,7 +204,7 @@ function StartupHeader({
   return (
     <CardHeader className="border-b border-white/20 pb-6">
       <div className="startup-details-header">
-        <div className="flex items-start gap-6 mb-4">
+        <div className="flex flex-row items-start gap-6 mb-4">
           <CompanyLogo
             domain={data.website || undefined}
             name={data.name}
@@ -213,13 +213,14 @@ function StartupHeader({
             className="flex-shrink-0 rounded-lg shadow-lg"
           />
 
-          <div className="flex flex-col justify-between min-w-0 flex-1">
-            <div className="flex items-center justify-between w-full mb-2">
+          <div className="flex flex-col justify-between min-w-0 flex-1 w-full">
+            {/* Company name and social links - can cascade below logo on small screens */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between w-full mb-2">
               <div className="flex flex-col mt-2">
-                <div className="flex items-center gap-3 mb-1">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-3">
                   <h1 className="text-3xl font-bold text-white break-words">{data.name}</h1>
 
-                  {/* Social Links - right after company name */}
+                  {/* Social Links - right after company name on larger screens, below on small screens */}
                   <div className="flex items-center gap-2">
                     {data.linkedin && (
                       <a
@@ -248,13 +249,13 @@ function StartupHeader({
                 </div>
                 
                 {/* City and State - below company name */}
-                <div className="flex items-center text-white text-sm">
+                <div className="flex items-center text-white text-sm max-sm:mt-0.5 max-sm:mb-2">
                   <span>{data.city}, {data.state}</span>
                 </div>
               </div>
               
-              {/* Trio positioned at rightmost end of same row */}
-              <div className="flex items-center gap-2">
+              {/* Company Status, Save Button, and Raise Prediction Indicator: positioned at rightmost end of same row */}
+              <div className="flex items-center gap-2 mt-2 sm:mt-0">
                 {data.companyStatus && (
                   <Badge
                     variant="outline"
@@ -349,8 +350,8 @@ function LeftColumn({ data }: { data: StartupData }) {
 
       {/* Notes */}
       <section className="bg-[#184618]/70 rounded-lg p-4 border border-white/10">
-        <SectionHeader icon={<FileText className="h-5 w-5 text-white" />} title="Notes" />
-        <AffinityNotes domain={data.website || ""} />
+        <SectionHeader icon={<FileText className="h-5 w-5 text-white mb-2" />} title="Notes" />
+        <AffinityNotes domain={data.website || ""} organizationId={data.organizationId as number} />
       </section>
     </div>
   )

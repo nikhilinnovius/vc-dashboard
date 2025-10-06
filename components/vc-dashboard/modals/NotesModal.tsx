@@ -1,19 +1,21 @@
 import React from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { AffinityNotes } from "@/components/affinity-notes"
+import { AffinityNotes } from "@/components/AffinityNotesSection"
 
 interface NotesModalProps {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
   selectedVC: string
-  vcWebsite?: string
+  website?: string
+  organizationId?: number | string
 }
 
 export const NotesModal: React.FC<NotesModalProps> = ({
   isOpen,
   onOpenChange,
   selectedVC,
-  vcWebsite = "",
+  website = "",
+  organizationId="",
 }) => {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -22,7 +24,7 @@ export const NotesModal: React.FC<NotesModalProps> = ({
           <DialogTitle className="text-white">{selectedVC} - Notes</DialogTitle>
         </DialogHeader>
         <div className="flex-1 overflow-hidden">
-          <AffinityNotes domain={vcWebsite} name={selectedVC} />
+          <AffinityNotes domain={website} name={selectedVC} organizationId={organizationId} />
         </div>
       </DialogContent>
     </Dialog>

@@ -20,27 +20,6 @@ const LOGO_SIZES = {
   grid: 40,
 } as const
 
-// const STATUS_COLORS: Record<string, string> = {
-//   "Cold": "#9B9EA7", // Gray
-//   "In Queue": "#E0E3EA", // Light gray
-//   "Tracking - Too Early": "#E0E3EA", // Light gray
-//   "Contacted": "#F37D00", // Orange
-//   "Engaged": "#F37D00", // Orange
-//   "Nurture": "#F37D00", // Orange
-//   "Meeting Booked": "#F37D00", // Orange
-//   "1st Meeting": "#126BF5", // Blue
-//   "Follow-up meeting(s)": "#126BF5", // Blue
-//   "Data Room": "#126BF5", // Blue
-//   "IC 1": "#5726DA", // Purple
-//   "Not Available": "#9B9EA7", // Gray
-//   "IC 2": "#5726DA", // Purple
-//   "IC 3": "#5726DA", // Purple
-//   "Term Sheet": "#5726DA", // Purple
-//   "Portfolio": "#008A68", // Green
-//   "Closed": "#DC4041", // Red
-//   "Paused": "#F37D00", // Orange
-// }
-
 // Last funding stage labels
 export const LAST_FUNDING_LABELS: Record<string, string> = {
   SERIES_UNKNOWN: "Series Unknown",
@@ -171,6 +150,7 @@ export const StartupCard = memo(function StartupCard({
           size={logoSize}
           type="startup"
           className="flex-shrink-0"
+          priority={index < 10 ? 10 - index : 0} // Higher priority for first 10 items
           onLoad={() => setIsImageLoaded(true)}
         />
       </div>

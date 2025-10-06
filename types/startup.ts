@@ -4,7 +4,7 @@ export interface StartupData {
   // Basic Info
   name: string
   website: string
-  linkedin: string
+  linkedin?: string
   city: string
   state: string
   domain?: string
