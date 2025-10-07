@@ -111,7 +111,7 @@ export const VCCard = memo(function VCCard({
 
   // Reusable action buttons component
   const renderActionButtons = (className: string = "") => (
-    <div className={`absolute bottom-2 right-2 ${className}`}>
+    <div className={`absolute bottom-1 right-1 ${className}`}>
       <Button
         variant="ghost"
         size="icon"
@@ -134,7 +134,7 @@ export const VCCard = memo(function VCCard({
   const portfolioInfo = (
     <>
       {(vcScore || 0) > 0 && (
-        <div className="flex items-center mt-4 mr-2">
+        <div className="flex items-center mr-2">
           <Award className="h-3.5 w-3.5 text-orange-500 mr-1" />
           <span className="text-sm font-medium">
             VC Score: {vcScore || 0}
@@ -187,7 +187,7 @@ export const VCCard = memo(function VCCard({
             href={website.startsWith("http") ? website : `https://${website}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center text-sm text-blue-500 hover:text-blue-600 hover:underline mb-2"
+            className="inline-flex items-center text-sm text-blue-500 hover:text-blue-600 hover:underline mb-3.5"
             onClick={(e) => e.stopPropagation()}
           >
             {website}

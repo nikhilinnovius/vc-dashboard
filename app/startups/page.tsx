@@ -6,6 +6,7 @@ import { GridView } from "@/components/vc-dashboard/core/GridView"
 import { FilterForStartups } from "@/components/vc-dashboard/filter/FilterForStartups"
 import { useStartupStore } from "@/stores"
 import { LogoDebugger } from "@/components/LogoDebugger"
+import { LoadingIndicator } from "@/components/vc-dashboard/shared/LoadingStates"
 
 export default function StartupsPage() {
   const { 
@@ -135,7 +136,7 @@ export default function StartupsPage() {
 
   // Show loading state if we're loading OR if we have no data yet (to handle race condition)
   if (isLoading || (startups.length === 0 && !error)) {
-    return <div className="text-white text-center py-10">Loading startups...</div>
+    return <LoadingIndicator entityType="startup" showSkeleton={true} />
   }
 
   if (error) {
@@ -180,3 +181,15 @@ export default function StartupsPage() {
     </div>
   )
 }
+
+
+/**
+ * last funding date - 
+ * number of employees - 
+ * number of rounds - 
+ * number of investors - 
+ * headcount_1y_pct numeric null,
+ * headcount_180d_pct numeric null,
+ *   days_before_last_funding date null,
+ *   days_since_founded date null,
+ */

@@ -1,12 +1,22 @@
 import { NextResponse } from "next/server"
 import { kv } from "@vercel/kv"
-import { getServerSession } from "next-auth/next"
-import { authOptions } from "@/lib/auth"
+import { getCurrentUser } from "@/lib/auth"
+import { getEnvironment } from "@/middleware"
 
 export async function POST(request: Request) {
-  const session = await getServerSession(authOptions)
-  if (!session || !session.user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  console.log("Saving VC")
+
+  let userId = null
+  let environment = getEnvironment()
+
+  if (environment !== 'development') {
+    userId = 'testuserid123##'
+  } else {
+    const user = await getCurrentUser()
+    if (!user || !user.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+    userId = user.id
   }
 
   const { id } = await request.json()
@@ -14,7 +24,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "VC ID is required" }, { status: 400 })
   }
 
-  const userId = session.user.id
   await kv.sadd(`user:${userId}:saved_vcs`, id)
 
   return NextResponse.json({ success: true })

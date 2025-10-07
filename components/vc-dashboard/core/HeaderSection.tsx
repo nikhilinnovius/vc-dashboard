@@ -99,9 +99,9 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onSelect={() => router.push("/saved/vcs")}>Saved VCs</DropdownMenuItem> 
                 <DropdownMenuItem onSelect={() => router.push("/saved/startups")}>Saved Startups</DropdownMenuItem>
-                <DropdownMenuItem onSelect={() => router.push("/feature-request")}>  
+                {/* <DropdownMenuItem onSelect={() => router.push("/feature-request")}>  
                   Feature Request
-                </DropdownMenuItem>
+                </DropdownMenuItem> */}
                 <DropdownMenuSeparator />
               </DropdownMenuContent>
             </DropdownMenu>

@@ -5,12 +5,24 @@ import { motion } from "framer-motion"
 import { useRouter } from "next/navigation"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { FileText, ExternalLink, Award, DollarSign, Rocket, AlertCircle, Compass, Radar } from "lucide-react"
+import { FileText, ExternalLink, Award, DollarSign, Rocket, AlertCircle, Compass, Radar, Globe } from "lucide-react"
 import { CompanyLogo } from "@/components/vc-dashboard/core/OrgIcon"
 import { SaveButton } from "@/components/SaveButton"
 import { EnhancedTooltip } from "@/components/enhanced-tooltip"
 import type { StartupData } from "@/lib/data-utils"
 import { getStatusTailwindColor } from "@/utils/startup-utils"
+
+// LinkedIn Icon Component
+const LinkedInIcon = ({ className = "h-4 w-4" }: { className?: string }) => (
+  <svg
+    className={className}
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+  </svg>
+)
 
 // Constants
 const ANIMATION_DELAY_MULTIPLIER = 0.03
@@ -79,6 +91,7 @@ export const StartupCard = memo(function StartupCard({
     id,
     name,
     website,
+    linkedin,
     city,
     state,
     description,
@@ -193,23 +206,35 @@ export const StartupCard = memo(function StartupCard({
           </div>
         )}
 
-        {/* Website and Score Row */}
-        <div className="flex items-center justify-between mb-4">
-          {/* Company Website */}
+        {/* Website and LinkedIn Icons Row */}
+        <div className="flex items-center gap-2 mb-3.5">
+          {/* Company Website - Globe Icon */}
           {website && (
             <a
               href={website.startsWith("http") ? website : `https://${website}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center text-sm text-black-500 hover:underline hover:text-blue-600 min-w-0"
+              className="text-black hover:text-blue-600 transition-colors"
               onClick={(e) => e.stopPropagation()}
             >
-              {website.replace(/^https?:\/\//, '')} 
-              <ExternalLink className="ml-1 h-3 w-3 flex-shrink-0 text-black-500" />
+              <Globe className="h-4 w-4" />
             </a>
           )}
 
-          <div></div>
+          {/* LinkedIn Icon */}
+          {linkedin && (
+            <a
+              href={linkedin.startsWith("http") ? linkedin : `https://${linkedin}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-black hover:text-blue-600 transition-colors"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <LinkedInIcon className="h-4 w-4" />
+            </a>
+          )}
+
+          <div className="flex-1"></div>
           
           {/* Company Score */}
           {companyScore !== null && companyScore !== undefined && (
@@ -260,7 +285,7 @@ export const StartupCard = memo(function StartupCard({
 
   // Action buttons component
   const renderActionButtons = (className: string = "") => (
-    <div className={`absolute bottom-2 right-2 ${className}`}>
+    <div className={`absolute bottom-1 right-1 ${className}`}>
       <Button
         variant="ghost"
         size="icon"
