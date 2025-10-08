@@ -58,7 +58,7 @@ export const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
         variant="outline"
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          "w-full sm:w-48 justify-between text-left font-normal bg-background/30 border-border/60 hover:bg-background/50 hover:border-border transition-colors",
+          "w-full justify-between text-left font-normal bg-background/30 border-border/60 hover:bg-background/50 hover:border-border transition-colors",
         )}
       >
         <span className="truncate text-white">
@@ -72,7 +72,7 @@ export const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
       </Button>
       
       {isOpen && (
-        <div className="absolute top-full left-0 w-full sm:w-48 z-50 mt-1 bg-background/95 backdrop-blur-sm border border-border/60 rounded-lg shadow-xl max-h-60 overflow-y-auto">
+        <div className="absolute top-full left-0 w-full z-50 mt-1 bg-background/95 backdrop-blur-sm border border-border/60 rounded-lg shadow-xl max-h-60 overflow-y-auto min-w-[200px] sm:right-0 sm:left-auto">
           <div className="p-2">
             {/* Individual Options */}
             {options.map((option) => (

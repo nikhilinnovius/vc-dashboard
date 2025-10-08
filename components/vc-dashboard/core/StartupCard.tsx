@@ -140,7 +140,7 @@ export const StartupCard = memo(function StartupCard({
   const getCardStyling = () => {
     const baseStyles = [
       "overflow-hidden transition-all duration-200 h-full relative hover:bg-muted",
-      localIsSaved ? "bg-blue-100 border-blue-400 shadow-md shadow-blue-300/30" : "",
+      // localIsSaved ? "bg-blue-100 border-blue-400 shadow-md shadow-blue-300/30" : "",
       className
     ].filter(Boolean).join(" ")
 
@@ -299,7 +299,7 @@ export const StartupCard = memo(function StartupCard({
         itemType="startup"
         initialSaved={localIsSaved}
         onSaveChange={handleSaveChange}
-        className={`h-8 w-8 ${localIsSaved ? "text-blue-500" : "text-gray-500 hover:text-gray-700"}`}
+        className={`h-8 w-8 ${localIsSaved ? "text-black" : "text-gray-500 hover:text-gray-700"}`}
       />
     </div>
   )

@@ -24,27 +24,27 @@ export function FundingSection({ data }: FundingSectionProps) {
          <div className="bg-white/5 p-3 rounded-lg">
            <div className="text-sm text-white/60 mb-1">Last Round</div>
            <div className="text-lg font-medium text-white">
-             {LAST_FUNDING_LABELS[data.lastRound]}
+             {data.lastRound ? LAST_FUNDING_LABELS[data.lastRound] : "N/A"}
            </div>
          </div>
        )}
 
 
-       {data.lastFundingAmount && (
+       {(
          <div className="bg-white/5 p-3 rounded-lg">
            <div className="text-sm text-white/60 mb-1">Last Funding</div>
            <div className="text-lg font-medium text-white">
-             ${formatNumber(data.lastFundingAmount)}
+            {data.lastFundingAmount ? `$${formatNumber(data.lastFundingAmount)}` : "N/A"}
            </div>
          </div>
        )}
 
 
-       {data.totalRaised && (
+       {(
          <div className="bg-white/5 p-3 rounded-lg">
            <div className="text-sm text-white/60 mb-1">Total Raised</div>
            <div className="text-lg font-medium text-white">
-             ${formatNumber(data.totalRaised)}
+             {data.totalRaised ? `$${formatNumber(data.totalRaised)}` : "N/A"}
            </div>
          </div>
        )}

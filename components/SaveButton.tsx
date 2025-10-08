@@ -42,7 +42,7 @@ export function SaveButton({ itemId, itemType, initialSaved, onSaveChange, class
       aria-label={isSaved ? `Unsave ${itemType}` : `Save ${itemType}`}
       className={cn(`transition-colors ${isSaved ? "text-blue-500" : "text-gray-500 hover:text-gray-700"}`, className)}
     >
-      <Bookmark className={`h-5 w-5 transition-all ${isSaved ? "fill-current" : ""}`} />
+      <Bookmark className={`h-5 w-5 transition-all ${isSaved ? "fill-current" : "hover:fill-current"}`} />
     </Button>
   )
 }

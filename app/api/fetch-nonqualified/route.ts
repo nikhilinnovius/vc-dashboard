@@ -64,6 +64,7 @@ export async function GET(req: Request) {
         id,
         name,
         website,
+        linkedin,
         company_score,
         last_funding_type,
         city,

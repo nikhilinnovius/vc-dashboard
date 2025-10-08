@@ -121,7 +121,7 @@ export const MultiSelectDropdownForLocation: React.FC<MultiSelectDropdownForLoca
         size={dataSource === "vcs" ? "sm" : "default"}
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          "w-full sm:w-48 justify-between text-left font-normal bg-background/30 border-border/60 hover:bg-background/50 hover:border-border transition-colors",
+          "w-full justify-between text-left font-normal bg-background/30 border-border/60 hover:bg-background/50 hover:border-border transition-colors",
         )}
         disabled={isLoading}
       >
@@ -139,7 +139,7 @@ export const MultiSelectDropdownForLocation: React.FC<MultiSelectDropdownForLoca
       </Button>
       
       {isOpen && (
-        <div className="absolute top-full left-0 w-full sm:w-80 z-50 mt-1 bg-background/95 backdrop-blur-sm border border-border/60 rounded-lg shadow-xl max-h-80 overflow-hidden">
+        <div className="absolute top-full left-0 w-full z-50 mt-1 bg-background/95 backdrop-blur-sm border border-border/60 rounded-lg shadow-xl max-h-80 overflow-hidden min-w-[200px] max-w-[320px] sm:right-0 sm:left-auto">
           {/* Search Input */}
           <div className="p-3 border-b border-border/60">
             <div className="relative">

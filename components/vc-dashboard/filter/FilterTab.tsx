@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { X, Filter } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { LayoutToggle } from "@/components/vc-dashboard/filter/LayoutToggle"
 import { usePathname } from 'next/navigation'
 import { MultiSelectDropdownForLocation } from '@/components/MultiSelectDropdownForLocation'
@@ -152,89 +151,63 @@ export const FilterTab = ({
           )}
         </div> */}
       </div>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-        <ScrollArea className="w-full whitespace-nowrap">
-        <div className="flex space-x-2 py-2 pb-3">
-          {/* {locationFilter && (
-            <Badge variant="secondary" className="animate-in fade-in zoom-in">
-              Location:
-              {locationFilter.includes(",")
-                ? (() => {
-                    const locations = locationFilter.split(",")
-                    return `${locations.length} Cities`
-                  })()
-                : locationFilter}
-              <button
-                onClick={(e) => {
-                  e.preventDefault()
-                  onClearFilter()
-                }}
-                className="ml-1 rounded-full hover:bg-muted"
-              >
-                <X className="h-3 w-3" />
-                <span className="sr-only">Clear filter</span>
-              </button>
-            </Badge>
-          )} */}
-          {popularCities.map((city) => {
-              const isSelected = selectedLocations.includes(city)
-              
-              return (
-                <Button
-                  key={city}
-                  variant="outline"
-                  size="sm"
-                  className={`whitespace-nowrap ${
-                    isSelected
-                      ? "bg-white text-black border-white hover:bg-gray-100 hover:text-black"
-                      : "bg-white/10 text-white hover:bg-white/20 border-white/20"
-                  }`}
-                  onClick={() => {
-                    if (isSelected) {
-                      handleLocationChange(selectedLocations.filter(loc => loc !== city))
-                    } else {
-                      handleLocationChange([...selectedLocations, city])
-                    }
-                  }}
-                >
-                  {city === "New York" ? "New York City" : city}
-                </Button>
-              )
-            })}
-          {entityType === "startup" && (
-            <Button
-              variant="outline"
-              onClick={onFilterStartupsModalOpen}
-              className="bg-white/10 text-white hover:bg-white/20 border-white/20 h-10 px-3 py-2 text-sm"
-            >
-              <Filter className="mr-2 h-4 w-4" />
-              Filter Startups
-            </Button>
-        )}
+      {/* Main Controls Row - Responsive layout */}
+      <div className="flex flex-col lg:flex-row lg:items-center gap-2 lg:gap-4">
+        {/* Popular Cities + Dropdown - Grouped together on large screens */}
+        <div className="flex flex-col lg:flex-row lg:items-center gap-2 lg:gap-4 flex-1">
+          {/* Popular Cities - Always scrollable */}
+          <div className="flex-1 lg:flex-none">
+            <div className="overflow-x-auto scrollbar-thin">
+              <div className="flex space-x-2 py-2 pb-3 min-w-max">
+                {popularCities.map((city) => {
+                    const isSelected = selectedLocations.includes(city)
+                    
+                    return (
+                      <Button
+                        key={city}
+                        variant="outline"
+                        size="sm"
+                        className={`whitespace-nowrap flex-shrink-0 ${
+                          isSelected
+                            ? "bg-white text-black border-white hover:bg-gray-100 hover:text-black"
+                            : "bg-white/10 text-white hover:bg-white/20 border-white/20"
+                        }`}
+                        onClick={() => {
+                          if (isSelected) {
+                            handleLocationChange(selectedLocations.filter(loc => loc !== city))
+                          } else {
+                            handleLocationChange([...selectedLocations, city])
+                          }
+                        }}
+                      >
+                        {city === "New York" ? "New York City" : city}
+                      </Button>
+                    )
+                  })}
+              </div>
+            </div>
+          </div>
 
+          {/* Dropdown - Right next to popular cities on large screens */}
+          <div className="flex-1 lg:flex-none lg:min-w-[200px]">
+            <MultiSelectDropdownForLocation
+              label="Filter by Location"
+              selectedValues={selectedLocations}
+              onSelectionChange={handleLocationChange}
+              dataSource="vcs"
+              className="w-full"
+            />
+          </div>
         </div>
-        <ScrollBar orientation="horizontal" />
-      </ScrollArea>
-
-      <MultiSelectDropdownForLocation
-            label="Filter by Location"
-            selectedValues={selectedLocations}
-            onSelectionChange={handleLocationChange}
-            dataSource="vcs"
-            className="flex-shrink-0 mb-1"
+        
+        {/* Layout toggle - Separate on the right */}
+        {onLayoutChange && (
+          <LayoutToggle
+            layout={layout}
+            onLayoutChange={onLayoutChange}
+            className="flex-shrink-0 "
           />
-        </div>
-      
-      
-          {/* Layout toggle */}
-      {onLayoutChange && (
-        <LayoutToggle
-          layout={layout}
-          onLayoutChange={onLayoutChange}
-          className="ml-1"
-        />
-      )}
+        )}
       </div>
       {/* Filter Chips */}
       {locationFilterChips.length > 0 && (

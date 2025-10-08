@@ -156,7 +156,6 @@ export default function NonAffinityStartupsPage() {
         totalItems={totalItems}
         totalPages={totalPages}
         currentPage={page}
-        isInAffinity={false}
         isExternalLoading={isLoading}
       />
     </div>

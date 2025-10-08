@@ -345,8 +345,8 @@ export const FilterForStartups: React.FC<FilterForStartupsProps> = ({
     <div className={cn("space-y-4", className)}>
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         {/* Filter Dropdowns */}
-        <div className="flex flex-wrap gap-2">
-          <div className="w-full sm:w-48">
+        <div className="grid grid-cols-2 sm:flex md:flex-row gap-2">
+          <div className="flex-1 min-w-0 sm:min-w-[200px]">
             <MultiSelectDropdown
               label="Round"
               options={roundOptions}
@@ -357,7 +357,7 @@ export const FilterForStartups: React.FC<FilterForStartupsProps> = ({
             />
           </div>
           
-          <div className="w-full sm:w-48">
+          <div className="flex-1 min-w-0 sm:min-w-[200px]">
             <MultiSelectDropdown
               label="End Market"
               options={endMarketOptions}
@@ -368,18 +368,18 @@ export const FilterForStartups: React.FC<FilterForStartupsProps> = ({
             />
           </div>
           
-          <div className="w-full sm:w-48">
+          <div className="flex-1 min-w-0 sm:min-w-[200px]">
             <MultiSelectDropdown
               label="Status"
               options={companyStatusOptions}
               selectedValues={selectedCompanyStatuses}
               onSelectionChange={handleCompanyStatusChange}
-              placeholder="Company Status"
+              placeholder="Status"
               className="text-white"
             />
           </div>
 
-          <div className="w-full sm:w-48">
+          <div className="flex-1 min-w-0 sm:min-w-[200px]">
             <MultiSelectDropdownForLocation
               label="Filter by Location" 
               selectedValues={selectedLocations}
@@ -387,7 +387,6 @@ export const FilterForStartups: React.FC<FilterForStartupsProps> = ({
               dataSource="companies"
             />
           </div>
-
           
         </div>
 
