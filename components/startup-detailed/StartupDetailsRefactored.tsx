@@ -120,7 +120,7 @@ export function StartupDetails({ startupId, onBack }: StartupDetailsProps) {
 
   return (
     <div className="space-y-6 pt-4 w-full overflow-x-hidden">
-      <BackButton onBack={onBack} />
+      {/* {onBack && <BackButton onBack={onBack} />} */}
       
       <Card className="overflow-hidden bg-[#132b12]/90 backdrop-blur-lg border-white/20 shadow-xl">
         <StartupHeader 
@@ -135,22 +135,22 @@ export function StartupDetails({ startupId, onBack }: StartupDetailsProps) {
   )
 }
 
-// Sub-components for better organization
-function BackButton({ onBack }: { onBack: () => void }) {
-  return (
-    <div className="flex items-center gap-3 mb-6">
-      <Button variant="ghost" onClick={onBack} className="text-white">
-        <ArrowLeft className="mr-2 h-4 w-4" />
-        Back
-      </Button>
-    </div>
-  )
-}
+// // Sub-components for better organization
+// function BackButton({ onBack }: { onBack: () => void }) {
+//   return (
+//     <div className="flex items-center gap-3 mb-6">
+//       <Button variant="ghost" onClick={onBack} className="text-white">
+//         <ArrowLeft className="mr-2 h-4 w-4" />
+//         Back
+//       </Button>
+//     </div>
+//   )
+// }
 
-function LoadingState({ onBack }: { onBack: () => void }) {
+function LoadingState({ onBack }: { onBack?: () => void }) {
   return (
     <div className="space-y-6 pt-4 w-full overflow-x-hidden">
-      <BackButton onBack={onBack} />
+      {/* {onBack && <BackButton onBack={onBack} />} */}
       <Card className="bg-white/10 backdrop-blur-lg">
         <CardContent className="p-6">
           <div className="flex flex-col items-center justify-center py-20">
@@ -163,10 +163,10 @@ function LoadingState({ onBack }: { onBack: () => void }) {
   )
 }
 
-function ErrorState({ onBack, error }: { onBack: () => void, error: string }) {
+function ErrorState({ onBack, error }: { onBack?: () => void, error: string }) {
   return (
     <div className="space-y-6 pt-4 w-full overflow-x-hidden">
-      <BackButton onBack={onBack} />
+      {/* {onBack && <BackButton onBack={onBack} />} */}  
       <Card className="bg-white/10 backdrop-blur-lg">
         <CardContent className="p-6">
           <div className="text-center py-8">
@@ -179,10 +179,10 @@ function ErrorState({ onBack, error }: { onBack: () => void, error: string }) {
   )
 }
 
-function NotFoundState({ onBack }: { onBack: () => void }) {
+function NotFoundState({ onBack }: { onBack?: () => void }) {
   return (
     <div className="space-y-6 pt-4 w-full overflow-x-hidden">
-      <BackButton onBack={onBack} />
+      {/* {onBack && <BackButton onBack={onBack} />} */}
       <Card className="bg-white/10 backdrop-blur-lg">
         <CardContent className="p-6">
           <p className="text-white text-center py-8">Startup data not found</p>
