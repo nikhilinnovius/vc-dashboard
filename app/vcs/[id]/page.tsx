@@ -6,6 +6,10 @@ import type { StartupData, VentureData } from "@/lib/data-utils"
 import { transformToStartupData, transformToVentureData } from "@/lib/data-transforms"
 import { GridView } from "@/components/vc-dashboard/core/GridView"
 import { FilterForStartups } from "@/components/vc-dashboard/filter/FilterForStartups"
+// import { useRouter } from "next/navigation"
+// import { Button } from "@/components/ui/button"
+// import { ArrowLeft } from "lucide-react"
+import { useURLState } from "@/hooks/use-url-state"
 
 
 // Helper function to convert AUM to billions or millions
@@ -25,6 +29,7 @@ function normalizeAUM(aum: string | undefined): string {
 }
 
 export default function VCDetailPage({ params }: { params: { id: string } }) {
+  // const router = useRouter()
   const vcId = params.id
   const [vc, setVc] = useState<VentureData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -35,6 +40,17 @@ export default function VCDetailPage({ params }: { params: { id: string } }) {
   const [totalItems, setTotalItems] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
   const [numberOfPortfolioCompanies, setNumberOfPortfolioCompanies] = useState(0)
+  const [previousPageUrl, setPreviousPageUrl] = useState<string | null>(null)
+
+  const { 
+    page: urlPage, 
+    updateURL, 
+    locationFilter, 
+    filterType,
+    rounds,
+    endMarkets,
+    companyStatuses
+  } = useURLState()
 
   const [filters, setFilters] = useState<{
     rounds: string[]
@@ -45,6 +61,21 @@ export default function VCDetailPage({ params }: { params: { id: string } }) {
     endMarkets: [],
     companyStatuses: []
   })
+
+  // Capture previous page URL on mount
+  useEffect(() => {
+    // Try to get referrer first
+    if (document.referrer && document.referrer.includes(window.location.origin)) {
+      const referrerUrl = new URL(document.referrer)
+      const referrerPath = referrerUrl.pathname
+      
+      if (referrerPath === "/" || referrerPath === "/vcs") {
+        setPreviousPageUrl(document.referrer)
+        console.log('Captured previous page URL from referrer:', document.referrer)
+        return
+      }
+    }
+  }, [])
 
   useEffect(() => {
     const fetchVC = async () => {
@@ -118,20 +149,78 @@ export default function VCDetailPage({ params }: { params: { id: string } }) {
     setCurrentPage(1)
   }, [filters])
 
-  const handlePageChange = (newPage: number) => {
-    setCurrentPage(newPage)
+  const handleClearFilter = () => {
+    setFilters({ rounds: [], endMarkets: [], companyStatuses: [] })
+    setCurrentPage(1)
+    updateURL({
+      page: "1",
+      rounds: null,
+      endMarkets: null,
+      companyStatuses: null,
+      location: null
+    })
   }
 
-  const handleFiltersChange = (newFilters: {
+  const handleUpdateURL = (params: any) => {
+    // Reset to page 1 when filters change via child component
+    updateURL({ ...params, page: "1" })
+  }
+
+  
+  const handleFiltersChange = (filters: {
     rounds: string[]
     endMarkets: string[]
     companyStatuses: string[]
   }) => {
-    setFilters(newFilters)
+    setFilters(filters)
+    // Update URL with filter parameters and reset to page 1
+    updateURL({ 
+      page: urlPage ? urlPage.toString() : "1",
+      rounds: filters.rounds.length > 0 ? filters.rounds.join(',') : null,
+      endMarkets: filters.endMarkets.length > 0 ? filters.endMarkets.join(',') : null,
+      companyStatuses: filters.companyStatuses.length > 0 ? filters.companyStatuses.join(',') : null
+    })
   }
 
+  const handlePageChange = (newPage: number) => {
+    updateURL({ page: newPage.toString() })
+    setCurrentPage(newPage)
+  }
+
+  // const handleBack = () => {
+  //   console.log('=== VC BACK BUTTON DEBUG ===')
+  //   console.log('Previous page URL:', previousPageUrl)
+  //   console.log('Document referrer:', document.referrer)
+    
+  //   // Always go to VCs page with search parameters from the previous page
+  //   if (previousPageUrl) {
+  //     try {
+  //       const referrerUrl = new URL(previousPageUrl)
+  //       const searchParams = referrerUrl.search
+  //       const vcsUrl = `/vcs${searchParams}`
+  //       console.log('Navigating to VCs page with search params:', vcsUrl)
+  //       router.push(vcsUrl)
+  //       return
+  //     } catch (e) {
+  //       console.error('Error parsing previous page URL:', e)
+  //     }
+  //   }
+    
+  //   // Fallback: go to VCs page without search params
+  //   console.log('No previous page available, going to VCs page')
+  //   router.push("/vcs")
+  // }
+
   return (
-    <div className="p-4">
+    <div className="p-2">
+      {/* Back Button
+      <div className="flex items-center gap-3 mb-4">
+        <Button variant="ghost" onClick={handleBack} className="text-white hover:text-white/80 hover:bg-white/10">
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back
+        </Button>
+      </div> */}
+      
       <div className="flex flex-row items-center gap-3 text-sm font-normal text-white/60 mb-4">
           <div className="flex-shrink-0">
             <CompanyLogo
@@ -161,7 +250,17 @@ export default function VCDetailPage({ params }: { params: { id: string } }) {
       
 
       {/* Filter Ribbon */}
-      <FilterForStartups onFiltersChange={handleFiltersChange} layout={layout} onLayoutChange={setLayout} className="mb-4" />
+      <FilterForStartups 
+        onFiltersChange={handleFiltersChange} 
+        layout={layout} 
+        onLayoutChange={setLayout} 
+        className="mb-4" 
+        onClearFilter={handleClearFilter}
+        onUpdateURL={handleUpdateURL}
+        rounds={rounds}
+        endMarkets={endMarkets}
+        companyStatuses={companyStatuses}
+      />
       
       <GridView 
         type="startup" 
@@ -174,8 +273,6 @@ export default function VCDetailPage({ params }: { params: { id: string } }) {
         layout={layout}
         isExternalLoading={isLoading}
       />
-
-      <h3 className="text-lg font-bold text-white mb-2">Not in Portfolio</h3>
     </div>
   )
 }

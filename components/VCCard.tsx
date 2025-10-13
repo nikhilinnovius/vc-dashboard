@@ -89,7 +89,18 @@ export const VCCard = memo(function VCCard({
   )
 
   const handleCardClick = () => {
-      router.push(`/vcs/${id}`)
+    // // Store current page URL for back navigation
+    // const currentUrl = window.location.href
+    // sessionStorage.setItem('previousPageUrl', currentUrl)
+    // console.log('Stored previous page URL:', currentUrl)
+    
+    // // Also maintain navigation stack
+    // const navigationStack = JSON.parse(sessionStorage.getItem('navigationStack') || '[]')
+    // navigationStack.push(currentUrl)
+    // sessionStorage.setItem('navigationStack', JSON.stringify(navigationStack))
+    // console.log('Updated navigation stack:', navigationStack)
+    
+    router.push(`/vcs/${id}`)
     // If inAffinity is false, do nothing
   }
 
