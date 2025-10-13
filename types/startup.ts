@@ -57,7 +57,7 @@ export interface StartupData {
 
 export interface StartupDetailsProps {
   startupId: string // domain or name as fallback
-  onBack: (vcName?: string) => void
+  onBack?: (vcName?: string) => void
 }
 
 export interface GrowthStatus {

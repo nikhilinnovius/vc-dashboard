@@ -52,7 +52,7 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
     router.push("/")
 
     // redirect("/") 
-      // window.open("https://athena.innoviuscapital.com", "_self")
+    // // window.open("https://athena.innoviuscapital.com", "_self")
   }
 
   console.log('HeaderSection Debug:', {
@@ -65,15 +65,20 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
 
   return (
     <header className="mb-6 flex flex-col items-center justify-between space-y-4 sm:flex-row sm:space-y-0 w-full">
-
         {/* <span>Athena</span> */}
               {/* ATHENA Logo Text */}
       <Button 
         variant="ghost" 
         className="p-0 hover:opacity-90 mb-8 sm:mb-0 hover:bg-transparent" 
         onClick={handleNavigateToHome}>
-            <div className="text-center mb-12">
-                <h2 className="text-6xl md:text-7xl font-thin text-white mt-20">ATHENA</h2>
+            <div className="text-center mb-12 relative">
+                <h2 className="text-8xl md:text-7xl font-thin text-white mt-20">ATHENA</h2>
+                <span className="text-white/70 text-sm tracking-[0.3em] mt-[-0.25rem]">
+                  VC DASHBOARD
+                </span>
+                {/* <div className="absolute bottom-[-15px] right-[-30px] text-xs text-white/60 font-medium">
+                    VC Dashboard
+                </div> */}
             </div>
       </Button>
              

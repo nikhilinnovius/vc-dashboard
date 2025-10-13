@@ -65,7 +65,7 @@ export function LayoutWrapper({ children }: LayoutWrapperProps) {
 
   return (
     <div className={`flex min-h-screen flex-col bg-gradient-to-br ${themeGradient}`}>
-      <div className="p-3 sm:p-6 lg:p-8">
+      <div className="p-3 sm:p-6 sm:pb-4 lg:p-8 lg:pb-6">
         <HeaderSection
         status={isAuthenticated ? "authenticated" : "unauthenticated"}
         session={ status === "authenticated" ? { user } : {
