@@ -81,23 +81,28 @@ const endMarketOptions = [
   "Utility / Energy / Climate"
 ];
 
+
 const companyStatusOptions = [
+  "Cold",
+  "In Queue",
+  "Tracking - Too Early",
+  "Contacted",
+  "Engaged",
+  "Nurture",
+  "Meeting Booked",
+  "1st Meeting",
   "Follow-up meeting(s)",
   "Data Room",
-  "Cold",
-  "Paused",
-  "Nurture",
-  "Contacted",
+  "IC 1",
+  "IC 1.5",
+  "IC 2",
+  "IC 3",
   "Term Sheet",
   "Portfolio",
-  "Engaged",
-  "Tracking - Too Early",
-  "IC 1",
-  "In Queue",
   "Closed",
-  "Meeting Booked",
-  "1st Meeting"
-]
+  "Paused"
+];
+
 
 // No need for filterType complexity - location filtering now checks both city and state fields universally
 
