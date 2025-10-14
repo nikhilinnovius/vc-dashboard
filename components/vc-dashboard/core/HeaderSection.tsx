@@ -73,9 +73,9 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
         onClick={handleNavigateToHome}>
             <div className="text-center mb-12 relative">
                 <h2 className="text-8xl md:text-7xl font-thin text-white mt-20">ATHENA</h2>
-                <span className="text-white/70 text-sm tracking-[0.3em] mt-[-0.25rem]">
+                {/* <span className="text-white/70 text-sm tracking-[0.3em] mt-[-0.25rem]">
                   VC DASHBOARD
-                </span>
+                </span> */}
                 {/* <div className="absolute bottom-[-15px] right-[-30px] text-xs text-white/60 font-medium">
                     VC Dashboard
                 </div> */}
