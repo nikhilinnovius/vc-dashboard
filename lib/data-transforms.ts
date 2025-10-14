@@ -44,7 +44,7 @@ export function transformToStartupData(rawStartup: any): StartupData {
     businessModel: rawStartup.business_model ?? undefined,
     subVertical: rawStartup.sub_vertical ?? undefined,
     totalEmployees: rawStartup.total_employees ?? undefined,
-    lastRound: rawStartup.last_round ?? undefined,
+    lastRound: rawStartup.last_round ?? rawStartup.last_funding_type ?? undefined,
     innoviusCoverage: rawStartup.innovius_coverage ?? undefined,
     headcount180dPct: rawStartup.headcount_180d_pct ?? undefined,
     headcount1yPct: rawStartup.headcount_1y_pct ?? undefined,
