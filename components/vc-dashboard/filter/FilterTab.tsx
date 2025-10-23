@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { X, Filter } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import { LayoutToggle } from "@/components/vc-dashboard/filter/LayoutToggle"
 import { usePathname } from 'next/navigation'
 import { MultiSelectDropdownForLocation } from '@/components/MultiSelectDropdownForLocation'
@@ -11,36 +9,8 @@ interface FilterComponentProps {
   locationFilter: string | null
   onClearFilter: () => void
   onUpdateURL: (params: any) => void
-  onFilterStartupsModalOpen: () => void
   layout?: 'grid' | 'list'
   onLayoutChange?: (layout: 'grid' | 'list') => void
-}
-
-// Helper function to determine entity type from current route
-const getEntityTypeFromPath = (pathname: string): "vc" | "startup" | null => {
-  if (pathname.includes('/startups') || pathname.includes('/saved/startups')) {
-    return "startup"
-  }
-  if (pathname.includes('/vcs') || pathname === '/' || pathname.includes('/saved/vcs')) {
-    return "vc"
-  }
-  return null
-}
-
-const displayTitle = (entityType: "vc" | "startup" | null) => {
-  if (entityType === "startup") return "Startups"
-  return "Venture Capital Firms"
-}
-
-// TODO: Replace with actual counts
-const displayCount = (entityType: "vc" | "startup" | null) => {
-  if (entityType === "startup") return 1000
-  return 2000
-}
-
-const displayCountLabel = (entityType: "vc" | "startup" | null) => {
-  if (entityType === "startup") return "startups"
-  return "firms"
 }
 
 // Optimized filter section
@@ -48,12 +18,11 @@ export const FilterTab = ({
   locationFilter,
   onClearFilter,
   onUpdateURL,
-  onFilterStartupsModalOpen,
   layout = 'grid',
   onLayoutChange,
 }: FilterComponentProps) => {
   const pathname = usePathname()
-  const entityType = getEntityTypeFromPath(pathname)
+  const entityType = "vc"
   const popularCities = [
     "New York", // Match database format instead of display format
     "Atlanta",
@@ -89,7 +58,7 @@ export const FilterTab = ({
       console.log('📍 Updating URL with locations:', locations.join(","))
       onUpdateURL({
         location: locations.join(","),
-        entityType: entityType || "vc",
+        entityType: entityType,
       })
     } else {
       console.log('🗑️ Clearing filter')
@@ -154,7 +123,7 @@ export const FilterTab = ({
       {/* Main Controls Row - Responsive layout */}
       <div className="flex flex-col lg:flex-row lg:items-center gap-2 lg:gap-4">
         {/* Popular Cities + Dropdown - Grouped together on large screens */}
-        <div className="flex flex-col lg:flex-row lg:items-center gap-2 lg:gap-4 flex-1">
+        <div className="flex flex-col lg:flex-row lg:items-center gap-2 lg:gap-2 flex-1">
           {/* Popular Cities - Always scrollable */}
           <div className="flex-1 lg:flex-none">
             <div className="overflow-x-auto scrollbar-thin">
@@ -195,7 +164,7 @@ export const FilterTab = ({
               selectedValues={selectedLocations}
               onSelectionChange={handleLocationChange}
               dataSource="vcs"
-              className="w-full"
+              className="w-full mb-1"
             />
           </div>
         </div>

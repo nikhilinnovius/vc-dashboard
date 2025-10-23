@@ -21,6 +21,7 @@ export function transformToVentureData(rawVC: any): VentureData {
   }
 }
 
+// We use this data transform endpoint for both qualified and non-qualified startups
 export function transformToStartupData(rawStartup: any): StartupData {
   return {
     id: rawStartup.id,
@@ -65,20 +66,20 @@ export function transformToStartupData(rawStartup: any): StartupData {
   }
 }
 
-export function transformNonQualifiedStartupData(rawStartup: any): StartupData {
-  return {
-    id: rawStartup.id,
-    name: rawStartup.name,
-    website: rawStartup.website ?? undefined,
-    companyScore: rawStartup.company_score ?? undefined,
-    lastRound: rawStartup.last_funding_type ?? undefined,
-    city: rawStartup.city ?? undefined,
-    description: rawStartup.description ?? undefined,
-    totalRaised: rawStartup.total_raised ?? undefined,
-    inAffinity: false, // Non-qualified startups are not in Affinity
-    linkedin: rawStartup.linkedin ?? undefined,
-  }
-}
+// export function transformNonQualifiedStartupData(rawStartup: any): StartupData {
+//   return {
+//     id: rawStartup.id,
+//     name: rawStartup.name,
+//     website: rawStartup.website ?? undefined,
+//     companyScore: rawStartup.company_score ?? undefined,
+//     lastRound: rawStartup.last_funding_type ?? undefined,
+//     city: rawStartup.city ?? undefined,
+//     description: rawStartup.description ?? undefined,
+//     totalRaised: rawStartup.total_raised ?? undefined,
+//     inAffinity: false, // Non-qualified startups are not in Affinity
+//     linkedin: rawStartup.linkedin ?? undefined,
+//   }
+// }
 
 
 

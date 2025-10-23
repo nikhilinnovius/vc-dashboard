@@ -121,6 +121,7 @@ export interface FilterForStartupsProps {
   rounds?: string | null
   endMarkets?: string | null
   companyStatuses?: string | null
+  page?: string | null
 }
 
 export const FilterForStartups: React.FC<FilterForStartupsProps> = ({
@@ -131,6 +132,7 @@ export const FilterForStartups: React.FC<FilterForStartupsProps> = ({
   locationFilter,
   onClearFilter,
   onUpdateURL,
+  page = "1",
   rounds,
   endMarkets,
   companyStatuses
@@ -144,6 +146,10 @@ export const FilterForStartups: React.FC<FilterForStartupsProps> = ({
   const [selectedCompanyStatuses, setSelectedCompanyStatuses] = useState<string[]>(() => {
     return companyStatuses ? companyStatuses.split(',').map(s => s.trim()) : []
   })
+  const [selectedPage, setSelectedPage] = useState<string>(() => {
+    return page ? page : "1"
+  })
+
   // Initialize location state from URL
   const [selectedLocations, setSelectedLocations] = useState<string[]>(() => {
     if (locationFilter) {
@@ -160,6 +166,42 @@ export const FilterForStartups: React.FC<FilterForStartupsProps> = ({
       setSelectedLocations([])
     }
   }, [locationFilter])
+
+  // Update selected rounds when rounds change
+  useEffect(() => {
+    if (rounds) {
+      setSelectedRounds(rounds.split(',').map(r => r.trim()))
+    } else {
+      setSelectedRounds([])
+    }
+  }, [rounds])
+
+  // Update selected end markets when endMarkets change
+  useEffect(() => {
+    if (endMarkets) {
+      setSelectedEndMarkets(endMarkets.split(',').map(m => m.trim()))
+    } else {
+      setSelectedEndMarkets([])
+    }
+  }, [endMarkets])
+
+  // Update selected company statuses when companyStatuses change
+  useEffect(() => {
+    if (companyStatuses) {
+      setSelectedCompanyStatuses(companyStatuses.split(',').map(s => s.trim()))
+    } else {
+      setSelectedCompanyStatuses([])
+    }
+  }, [companyStatuses])
+
+  // // Update page   statuses when page change
+  // useEffect(() => {
+  //   if (page) {
+  //     setSelectedPage(page)
+  //   } else {
+  //     setSelectedPage("1")
+  //   }
+  // }, [page])
 
   // Note: We initialize from URL params in useState, but don't sync with URL changes
   // to avoid conflicts with user interactions. URL updates happen via the handlers.

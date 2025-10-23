@@ -1,7 +1,7 @@
 import { transformToStartupData } from '@/lib/data-transforms'
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
-import { frontendToBackendRoundMap } from '@/components/vc-dashboard/filter/FilterForStartups'
+import { frontendToBackendRoundMap } from '@/lib/round-mapping'
 
 // Startup/Company interface based on existing types
 export interface Startup {

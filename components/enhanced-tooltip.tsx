@@ -9,8 +9,8 @@ import { cn } from "@/lib/utils"
 
 interface EnhancedTooltipProps {
   title: string
-  description: string
-  children: ReactNode
+  description: string | ReactNode
+  children: ReactNode 
 }
 
 export function EnhancedTooltip({ title, description, children }: EnhancedTooltipProps) {
@@ -90,7 +90,14 @@ export function EnhancedTooltip({ title, description, children }: EnhancedToolti
           >
             <div className="max-w-xs space-y-2">
               <h4 className="font-semibold text-base border-b border-muted/20 pb-1 mb-1">{title}</h4>
-              <p className="leading-relaxed text-sm text-muted-foreground whitespace-normal">{description}</p>
+              {/* if description is a string, render it as a paragraph, otherwise render it as a div and don't truncate */}
+              <div className="leading-relaxed text-sm text-muted-foreground whitespace-normal">
+                {typeof description === "string" ? (
+                  <p>{description}</p>
+                ) : (
+                  description
+                )}
+              </div>
             </div>
             <TooltipPrimitive.Arrow className="fill-border" />
           </TooltipPrimitive.Content>

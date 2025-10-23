@@ -95,12 +95,15 @@ export const StartupCard = memo(function StartupCard({
     city,
     state,
     description,
+    totalEmployees, 
     lastRound,
     companyScore,
     companyStatus,
     endMarket,
+    lastFundingAmount,
     totalRaised,
     inAffinity,
+    headcount1yPct
   } = startupData || {}
 
 
@@ -152,6 +155,20 @@ export const StartupCard = memo(function StartupCard({
     return `${baseStyles} ${layoutStyles[layout] || layoutStyles.list}`
   }
 
+  const renderCompanyDescriptionForTooltip = (description: string) => (
+    <div className="text-sm text-muted-foreground">
+      {description}
+      {!inAffinity && (
+        <div className="text-sm text-muted-foreground flex flex-col gap-1 mt-2">
+          <span className="text-orange-500">- Total Employees: {totalEmployees}</span>
+          <span className="text-orange-500">- Last Funding: {formatCurrencyShort(lastFundingAmount)}</span>
+          <span className="text-orange-500">- Total Funding: {formatCurrencyShort(totalRaised)}</span>  
+          <span className="text-orange-500">- 1 Year Headcount Growth: {headcount1yPct ? headcount1yPct + "%" : "N/A"}</span>  
+        </div>
+      )}
+    </div>
+  )
+
   // Company info component: Logo, Name, Location, and Website 
   const renderCompanyInfo = (logoSize: number = 40, showDescription: boolean = true) => (
     <div className="flex items-start gap-3 sm:gap-4 w-full overflow-hidden">
@@ -173,7 +190,7 @@ export const StartupCard = memo(function StartupCard({
 
         <div className="flex items-baseline gap-1 mb-2">
           <h3 className="text-base sm:text-lg font-semibold line-clamp-2 mr-0.5">{name}</h3>
-          <EnhancedTooltip title={name + (endMarket ? " (" + endMarket + ")" : "")} description={showDescription ? (description || "") : ""}>
+          <EnhancedTooltip title={name + (endMarket ? " (" + endMarket + ")" : "")} description={renderCompanyDescriptionForTooltip(description || "")}>
             {/* decrease icon size */}
             <span className="sr-only">Info</span>
           </EnhancedTooltip>

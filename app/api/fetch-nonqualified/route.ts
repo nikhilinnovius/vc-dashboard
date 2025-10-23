@@ -70,7 +70,12 @@ export async function GET(req: Request) {
         city,
         country,
         description,
-        total_raised
+        total_raised,
+        total_employees,
+        last_funding_amount,
+        last_funding_type,
+        headcount_180d_pct,
+        headcount_1y_pct
       `)
       .order("company_score", { ascending: false, nullsFirst: false })
       .range(offset, offset + limit - 1)

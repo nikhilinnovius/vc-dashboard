@@ -52,15 +52,16 @@ export default function VCDetailPage({ params }: { params: { id: string } }) {
     companyStatuses
   } = useURLState()
 
-  const [filters, setFilters] = useState<{
-    rounds: string[]
-    endMarkets: string[]
-    companyStatuses: string[]
-  }>({
-    rounds: [],
-    endMarkets: [],
-    companyStatuses: []
-  })
+  // Remove local filters state - use URL parameters directly
+  // const [filters, setFilters] = useState<{
+  //   rounds: string[]
+  //   endMarkets: string[]
+  //   companyStatuses: string[]
+  // }>({
+  //   rounds: [],
+  //   endMarkets: [],
+  //   companyStatuses: []
+  // })
 
   // Capture previous page URL on mount
   useEffect(() => {
@@ -110,15 +111,30 @@ export default function VCDetailPage({ params }: { params: { id: string } }) {
           page: currentPage.toString()
         })
         
-        if (filters.rounds.length > 0) {
-          queryParams.set('rounds', filters.rounds.join(','))
+        if (rounds) {
+          queryParams.set('rounds', rounds)
         }
-        if (filters.endMarkets.length > 0) {
-          queryParams.set('endMarkets', filters.endMarkets.join(','))
+        if (endMarkets) {
+          queryParams.set('endMarkets', endMarkets)
         }
-        if (filters.companyStatuses.length > 0) {
-          queryParams.set('companyStatuses', filters.companyStatuses.join(','))
+        if (companyStatuses) {
+          queryParams.set('companyStatuses', companyStatuses)
         }
+        // Add location filter from URL state
+        if (locationFilter) {
+          queryParams.set('location', locationFilter)
+        }
+
+        console.log('Fetching portfolio companies with params:', {
+          vcId,
+          currentPage,
+          rounds,
+          endMarkets,
+          companyStatuses,
+          locationFilter,
+          queryString: queryParams.toString(),
+          timestamp: new Date().toISOString()
+        })
 
         const response = await fetch(`/api/fetch-startups/${vcId}?${queryParams.toString()}`)
         if (!response.ok) {
@@ -132,6 +148,11 @@ export default function VCDetailPage({ params }: { params: { id: string } }) {
         const transformedStartups = data.startups?.map(transformToStartupData) || []
         setPortfolioCompanies(transformedStartups)
         setNumberOfPortfolioCompanies(data.numberOfStartups || 0)
+
+        console.log('Fetched portfolio companies:', transformedStartups.slice(0, 5).map(c => ({ 
+          name: c.name, 
+          lastRound: c.lastRound 
+        })))
         
         // Use server-side pagination data
         setTotalItems(data.totalItems || 0)
@@ -142,15 +163,15 @@ export default function VCDetailPage({ params }: { params: { id: string } }) {
     }
 
     fetchPortfolioCompanies()
-  }, [vcId, currentPage, filters])
+  }, [vcId, currentPage, rounds, endMarkets, companyStatuses, locationFilter])
 
   // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1)
-  }, [filters])
+  }, [rounds, endMarkets, companyStatuses])
 
   const handleClearFilter = () => {
-    setFilters({ rounds: [], endMarkets: [], companyStatuses: [] })
+    console.log('Clearing all filters')
     setCurrentPage(1)
     updateURL({
       page: "1",
@@ -163,6 +184,7 @@ export default function VCDetailPage({ params }: { params: { id: string } }) {
 
   const handleUpdateURL = (params: any) => {
     // Reset to page 1 when filters change via child component
+    console.log('handleUpdateURL called with:', params)
     updateURL({ ...params, page: "1" })
   }
 
@@ -172,10 +194,9 @@ export default function VCDetailPage({ params }: { params: { id: string } }) {
     endMarkets: string[]
     companyStatuses: string[]
   }) => {
-    setFilters(filters)
     // Update URL with filter parameters and reset to page 1
     updateURL({ 
-      page: urlPage ? urlPage.toString() : "1",
+      page: "1",
       rounds: filters.rounds.length > 0 ? filters.rounds.join(',') : null,
       endMarkets: filters.endMarkets.length > 0 ? filters.endMarkets.join(',') : null,
       companyStatuses: filters.companyStatuses.length > 0 ? filters.companyStatuses.join(',') : null
@@ -272,6 +293,7 @@ export default function VCDetailPage({ params }: { params: { id: string } }) {
         currentPage={currentPage}
         layout={layout}
         isExternalLoading={isLoading}
+        vcPortfolioPage={true}
       />
     </div>
   )

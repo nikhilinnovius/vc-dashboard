@@ -5,7 +5,7 @@
 
 import { NextResponse } from "next/server"
 import { createClient } from "@/utils/supabase/server"
-import { frontendToBackendRoundMap } from "@/components/vc-dashboard/filter/FilterForStartups"
+import { frontendToBackendRoundMap } from "@/lib/round-mapping"
 
 export async function GET(request: Request, { params }: { params: { "vc-id": string } }) {
   const supabase = await createClient()
@@ -19,9 +19,25 @@ export async function GET(request: Request, { params }: { params: { "vc-id": str
   const rounds = searchParams.get("rounds")?.split(",").map(r => r.trim()).filter(Boolean) || []
   const endMarkets = searchParams.get("endMarkets")?.split(",").map(m => m.trim()).filter(Boolean) || []
   const companyStatuses = searchParams.get("companyStatuses")?.split(",").map(s => s.trim()).filter(Boolean) || []
+  const locationFilter = searchParams.get("location")?.split(",").map(l => l.trim()).filter(Boolean) || []
 
   // Map frontend round filters to backend format
-  const backendRoundFilters = rounds.map(round => frontendToBackendRoundMap[round]).filter(Boolean)
+  console.log('DEBUG: frontendToBackendRoundMap:', frontendToBackendRoundMap)
+  console.log('DEBUG: rounds to map:', rounds)
+  const backendRoundFilters = rounds.map(round => {
+    const mapped = frontendToBackendRoundMap[round]
+    console.log(`DEBUG: mapping "${round}" -> "${mapped}" (type: ${typeof mapped})`)
+    return mapped
+  }).filter(Boolean)
+  console.log('backendRoundFilters:', backendRoundFilters)
+  
+  console.log('API received filters:', {
+    rounds,
+    backendRoundFilters,
+    endMarkets,
+    companyStatuses,
+    locationFilter
+  })
 
   try {
     // First, get the total count of all portfolio companies for this VC
@@ -79,15 +95,23 @@ export async function GET(request: Request, { params }: { params: { "vc-id": str
     }
 
     // Combine and filter companies
+    // Add "not in affinity" before the beginning of nonqualified results
     let allCompanies = [...(qualifiedResult.data || []), ...(nonqualifiedResult.data || [])]
 
     // Apply filters
-    if (backendRoundFilters.length > 0) {
-      allCompanies = allCompanies.filter(company => 
-        backendRoundFilters.includes(company.last_round || '')
-      )
+    console.log("DEBUG: Applying round filters")
+    console.log('allCompanies:', allCompanies.slice(0, 5).map(c => ({ 
+      name: c.name, 
+      lastRound: c.lastRound,
+      city: c.city,
+      state: c.state
+    })))
+    console.log('backendRoundFilters:', backendRoundFilters)
+    console.log('backendRoundFilters', backendRoundFilters)
+    if (backendRoundFilters.length > 0) {   
+        allCompanies = allCompanies.filter(company => backendRoundFilters.includes(company.last_round || company.last_funding_type || ''))
     }
-
+    console.log("DEBUG: After round filtering:", allCompanies.length, "companies")
     if (endMarkets.length > 0) {
       allCompanies = allCompanies.filter(company => 
         endMarkets.includes(company.end_market || '')
@@ -99,6 +123,38 @@ export async function GET(request: Request, { params }: { params: { "vc-id": str
         companyStatuses.includes(company.company_status || '') ||
         companyStatuses.includes(company.status || '')
       )
+    }
+
+    // Apply location filter
+    if (locationFilter.length > 0) {
+      console.log('Before location filtering:', allCompanies.length, 'companies')
+      console.log('Sample company locations:', allCompanies.slice(0, 5).map(c => ({ 
+        name: c.name, 
+        city: c.city, 
+        state: c.state 
+      })))
+      
+      allCompanies = allCompanies.filter(company => {
+        const companyCity = company.city?.toLowerCase() || ''
+        const companyState = company.state?.toLowerCase() || ''
+        
+        const matches = locationFilter.some(location => {
+          const locationLower = location.toLowerCase()
+          const cityMatch = companyCity.includes(locationLower)
+          const stateMatch = companyState.includes(locationLower)
+          const combinedMatch = `${companyCity}, ${companyState}`.includes(locationLower)
+          
+          if (cityMatch || stateMatch || combinedMatch) {
+            console.log(`Location match found: ${company.name} (${company.city}, ${company.state}) matches "${location}"`)
+          }
+          
+          return cityMatch || stateMatch || combinedMatch
+        })
+        
+        return matches
+      })
+      
+      console.log('After location filtering:', allCompanies.length, 'companies')
     }
 
     // Apply pagination to filtered results

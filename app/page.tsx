@@ -30,6 +30,7 @@ export default function Home() {
   const totalItems = useVcStore(state => state.totalItems)
   const totalPages = useVcStore(state => state.totalPages)
   const getFilteredVcsForPage = useVcStore(state => state.getFilteredVcsForPage)
+  const CARDS_PER_PAGE = 50
   
   // Debug logging
   console.log('Home Page Store State:', { 
@@ -71,7 +72,7 @@ export default function Home() {
     if (isLoading) {
       return { vcs: [], totalItems: 0, totalPages: 0 }
     }
-    return getFilteredVcsForPage(page, filterType, locationFilter, 20)
+    return getFilteredVcsForPage(page, filterType, locationFilter, CARDS_PER_PAGE)
   }, [getFilteredVcsForPage, page, filterType, locationFilter, isLoading])
   
   
@@ -187,7 +188,6 @@ export default function Home() {
           locationFilter={locationFilter}
           onClearFilter={handleClearFilter}
           onUpdateURL={handleUpdateURL}
-          onFilterStartupsModalOpen={() => {}}
           layout={layout}
           onLayoutChange={handleLayoutChange}
         />

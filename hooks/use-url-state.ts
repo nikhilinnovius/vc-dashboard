@@ -29,6 +29,7 @@ interface UseURLStateReturn {
   router: any
 }
 
+// This hook is used to manage the URL state for the dashboard: it helps us retriev the current URL state and update the URL state
 export const useURLState = (): UseURLStateReturn => {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -71,7 +72,6 @@ export const useURLState = (): UseURLStateReturn => {
         }
       })
     }
-
     const newPath = `${url.pathname}${url.search}`
     window.history.pushState({}, "", newPath)
   }, [])

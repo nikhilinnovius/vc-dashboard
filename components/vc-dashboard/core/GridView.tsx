@@ -166,6 +166,27 @@ const filteredItems = useMemo(() => {
     return filtered
   }, [paginatedItems, type, lastRoundFilter, statusFilter, endMarketFilters])
 
+  // Separate qualified and non-qualified companies for startup type
+  const { qualifiedCompanies, nonQualifiedCompanies } = useMemo(() => {
+    if (type !== "startup") {
+      return { qualifiedCompanies: filteredItems, nonQualifiedCompanies: [] }
+    }
+
+    const qualified = filteredItems.filter((item: any) => {
+      // Qualified companies are those that are in Affinity (inAffinity: true)
+      // or don't have the "not in affinity" marker
+      return item.inAffinity !== false
+    })
+    
+    const nonQualified = filteredItems.filter((item: any) => {
+      // Non-qualified companies are those not in Affinity (inAffinity: false)
+      // or have the "not in affinity" marker
+      return item.inAffinity === false
+    })
+
+    return { qualifiedCompanies: qualified, nonQualifiedCompanies: nonQualified }
+  }, [filteredItems, type])
+
   // Debug logging
   console.log('GridView data:', data)
   console.log('GridView data type:', typeof data)
@@ -208,9 +229,64 @@ const filteredItems = useMemo(() => {
           />
         )}
         
-        <div className={layout === 'grid' ? "grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" : "grid gap-4 sm:gap-6 grid-cols-1"}>
-          {filteredItems.map((item, index) => (
-            type === "vc" ? (
+        {/* Render qualified companies first */}
+        {qualifiedCompanies.length > 0 && (
+          <div className={layout === 'grid' ? "grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" : "grid gap-4 sm:gap-6 grid-cols-1"}>
+            {qualifiedCompanies.map((item, index) => (
+              type === "vc" ? (
+                <VCCard
+                  key={item.id || `vc-${index}`}
+                  vcData={item as VentureData}
+                  layout={layout}
+                  index={index}
+                  animate={true}
+                  isSaved={false}
+                  onNoteClick={handleNoteClick}
+                  onSaveChange={handleVCSaveChange}
+                />
+              ) : (
+                <StartupCard
+                  key={item.id || `startup-${index}`}
+                  startupData={item as StartupData}
+                  layout={layout}
+                  index={index}
+                  animate={true}
+                  isSaved={false}
+                  onNoteClick={handleNoteClick}
+                  onSaveChange={handleStartupSaveChange}
+                />
+              )
+            ))}
+          </div>
+        )}
+
+        {/* Show "Not in Affinity" section header if there are non-qualified companies */}
+        {type === "startup" && nonQualifiedCompanies.length > 0 && (
+          <h2 className="text-2xl font-bold text-white mb-4 mt-8">Not in Affinity</h2>
+        )}
+
+        {/* Render non-qualified companies */}
+        {type === "startup" && nonQualifiedCompanies.length > 0 && (
+          <div className={layout === 'grid' ? "grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" : "grid gap-4 sm:gap-6 grid-cols-1"}>
+            {nonQualifiedCompanies.map((item, index) => (
+              <StartupCard
+                key={item.id || `startup-nq-${index}`}
+                startupData={item as StartupData}
+                layout={layout}
+                index={qualifiedCompanies.length + index} // Offset index to maintain animation sequence
+                animate={true}
+                isSaved={false}
+                onNoteClick={handleNoteClick}
+                onSaveChange={handleStartupSaveChange}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* Fallback for non-startup types or when no separation is needed */}
+        {/* {type !== "startup" && (
+          <div className={layout === 'grid' ? "grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" : "grid gap-4 sm:gap-6 grid-cols-1"}>
+            {filteredItems.map((item, index) => (
               <VCCard
                 key={item.id || `vc-${index}`}
                 vcData={item as VentureData}
@@ -221,20 +297,9 @@ const filteredItems = useMemo(() => {
                 onNoteClick={handleNoteClick}
                 onSaveChange={handleVCSaveChange}
               />
-            ) : (
-              <StartupCard
-                key={item.id || `startup-${index}`}
-                startupData={item as StartupData}
-                layout={layout}
-                index={index}
-                animate={true}
-                isSaved={false}
-                onNoteClick={handleNoteClick}
-                onSaveChange={handleStartupSaveChange}
-              />
-            )
-          ))}
-        </div>
+            ))}
+          </div>
+        )} */}
 
         {/* Pagination Controls */}
         {totalPages > 1 && (

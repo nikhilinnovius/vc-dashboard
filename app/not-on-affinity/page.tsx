@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from "react"
 import { useURLState } from "@/hooks/use-url-state"
 import { GridView } from "@/components/vc-dashboard/core/GridView"
 import type { StartupData } from "@/lib/data-utils"
-import { transformNonQualifiedStartupData, transformToStartupData } from "@/lib/data-transforms"
+import { transformToStartupData } from "@/lib/data-transforms"
 import { StartupGridSkeleton } from "@/components/skeleton-components"
 import { LoadingIndicator } from "@/components/vc-dashboard/shared/LoadingStates"
 
@@ -68,7 +68,7 @@ export default function NonAffinityStartupsPage() {
           console.log('Using estimated count for better performance')
         }
 
-        const startups = (data?.startups || []).map(transformNonQualifiedStartupData)
+        const startups = (data?.startups || []).map(transformToStartupData)
         console.log('Startups:', startups)
 
         setAllLoadedStartups(startups)

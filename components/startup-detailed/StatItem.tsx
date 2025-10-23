@@ -1,5 +1,6 @@
 import type React from "react"
 import { cn } from "@/lib/utils"
+import { Badge } from "../ui/badge"
 
 interface StatItemProps {
   label: string
@@ -21,7 +22,16 @@ export function StatItem({ label, value, icon, positive = false, negative = fals
         {icon}
         <span className="text-white/70">{label}</span>
       </div>
-      {!isNumeric && <span className="font-medium text-white">{value}</span>} {/* Show value as white text if not numeric */}
+      {/* {!isNumeric && value.split("; ").map((item, index) => (
+        <Badge key={index} className="font-medium text-white">{item}</Badge>
+      ))} */}
+
+      {/*if value is not numeric and label is "Offshore Data", split value by "; " and show each value as a pill with white text */}
+      {!isNumeric && label === "Offshore Data" && value.split("; ").map((item, index) => (
+        <Badge key={index} className="font-medium text-white">{item}</Badge>
+      ))}
+      {!isNumeric && label !== "Offshore Data" && <span className="font-medium text-white">{value}</span>} 
+      {/* Show value as white text if not numeric */}
       {isNumeric && <span className={isPositive ? "font-medium text-green-500" : "font-medium text-red-500"}> {/* Switch between green and red based on positive or negative */}
         {value}
       </span>}
